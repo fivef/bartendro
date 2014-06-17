@@ -35,6 +35,7 @@ parser.add_argument("-d", "--debug", help="Turn on debugging mode to see stack t
 parser.add_argument("-t", "--host", help="Which interfaces to listen on. Default: 127.0.0.1", default="127.0.0.1", type=str)
 parser.add_argument("-p", "--port", help="Which port to listen on. Default: 8080", default="8080", type=int)
 parser.add_argument("-s", "--software-only", help="Run only the server software, without hardware interaction.", default=False, action='store_true')
+parser.add_argument("-nr", "--no-router", help="Run without a router.", default=False, action='store_true')
 
 args = parser.parse_args()
 
@@ -73,6 +74,12 @@ try:
 except KeyError:
     app.software_only = 0
 
+try: 
+    app.no_router = args.no_router or int(os.environ['BARTENDRO_NO_ROUTER'])
+    app.num_dispensers = 1
+except KeyError:
+    app.software_only = 0
+
 if not os.path.exists("bartendro.db"):
     print "bartendro.db file not found. Please copy bartendro.db.default to "
     print "bartendro.db in order to provide Bartendro with a starting database."
@@ -88,7 +95,7 @@ app.globals = BartendroGlobalLock()
 startup_err = ""
 # Start the driver, which talks to the hardware
 try:
-    app.driver = driver.RouterDriver("/dev/ttyAMA0", app.software_only);
+    app.driver = driver.RouterDriver("/dev/ttyAMA0", app.software_only, app.no_router);
     app.driver.open()
     logging.info("Found %d dispensers." % app.driver.count())
 except I2CIOError:

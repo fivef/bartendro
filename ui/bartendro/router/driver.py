@@ -86,7 +86,7 @@ def crc16_update(crc, a):
 class RouterDriver(object):
     '''This object interacts with the bartendro router controller.'''
 
-    def __init__(self, device, software_only):
+    def __init__(self, device, software_only, no_router=False):
         self.device = device
         self.ser = None
         self.msg = ""
@@ -96,6 +96,7 @@ class RouterDriver(object):
         self.dispenser_version = DISPENSER_DEFAULT_VERSION
         self.startup_log = ""
         self.debug_levels = [ 200, 180, 120 ]
+        self.no_router = no_router
 
         # dispenser_ids are the ids the dispensers have been assigned. These are logical ids 
         # used for dispenser communication.
@@ -106,6 +107,8 @@ class RouterDriver(object):
 
         if software_only:
             self.num_dispensers = MAX_DISPENSERS
+        elif no_router:
+            self.num_dispensers = 1
         else:
             self.num_dispensers = 0 
 
@@ -153,7 +156,7 @@ class RouterDriver(object):
         self.status = status_led.StatusLED(self.software_only)
         self.status.set_color(0, 0, 1)
 
-        self.dispenser_select = dispenser_select.DispenserSelect(MAX_DISPENSERS, self.software_only)
+        self.dispenser_select = dispenser_select.DispenserSelect(MAX_DISPENSERS, self.software_only or self.no_router)
         self.dispenser_select.open()
         self.dispenser_select.reset()
 

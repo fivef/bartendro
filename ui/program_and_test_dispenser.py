@@ -26,7 +26,7 @@ def test(ll):
 
     sleep(1)
 
-    dt = driver.RouterDriver("/dev/ttyAMA0", False)
+    dt = driver.RouterDriver("/dev/ttyAMA0", False, no_router=True)
     dt.open()
     sleep(.1)
     if dt.ping(0):
