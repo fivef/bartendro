@@ -1,21 +1,22 @@
-The Bartendro UI requires the following pieces of software to be installed:
+Installation
+============
+Raspberry Pi (Raspian)
+----------------------
+sudo apt-get install nginx uwsgi-plugin-python python-werkzeug python-jinja2 python-setuptools python-wtforms python-serial python-smbus python-sqlite python-sqlalchemy memcached python-memcache python-flask sqlite3 python-rpi.gpio -y
 
+Ubuntu (14.04)
+--------------
+sudo apt-get install nginx uwsgi-plugin-python python-werkzeug python-jinja2 python-setuptools python-wtforms python-serial python-smbus python-sqlite python-sqlalchemy memcached python-memcache python-flask sqlite3 -y
+
+sudo pip install flask-sqlalchemy flask-login
+
+Additional Information
+----------------------
 werkzeug - http://werkzeug.pocoo.org/docs/
 jinja2 - http://jinja.pocoo.org/docs/
 wtforms - http://wtforms.simplecodes.com/
 
-If you're installing into raspian then you can get all the dependencies in one go:
-
-apt-get install nginx uwsgi uwsgi-plugin-python
-apt-get install python-werkzeug python-jinja2 python-setuptools \
-        python-wtforms python-serial python-smbus python-sqlite python-sqlalchemy \
-        memcached python-memcache python-rpi.gpio python-flask sqlite3 
-
-If you'd like to have python dependencies installed with pip:
-
-pip install flask flask-sqlalchemy wtforms python-memcached pyserial
-
-Also you need to install flask-sqlalchemy & flask-login:
+flask-sqlalchemy & flask-login archives if not using pip:
 
    https://pypi.python.org/packages/source/F/Flask-SQLAlchemy/Flask-SQLAlchemy-0.16.tar.gz
    https://pypi.python.org/packages/source/F/Flask-Login/Flask-Login-0.1.3.tar.gz
