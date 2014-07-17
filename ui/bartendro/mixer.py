@@ -20,9 +20,7 @@ from bartendro.model.shot_log import ShotLog
 from bartendro.global_lock import BartendroLock
 from bartendro.error import BartendroBusyError, BartendroBrokenError, BartendroCantPourError, BartendroCurrentSenseError
 
-TICKS_PER_ML = 2.78
-CALIBRATE_ML = 60 
-CALIBRATION_TICKS = TICKS_PER_ML * CALIBRATE_ML
+ML_PER_SECOND = 10.1
 
 FULL_SPEED = 255
 HALF_SPEED = 166
@@ -240,36 +238,24 @@ class Mixer(object):
         return fsm.EVENT_LL_OK
 
     def _state_ready(self):
-        self.driver.set_status_color(0, 1, 0)
         return fsm.EVENT_DONE
 
     def _state_low(self):
-        self.driver.led_idle()
-        self.driver.set_status_color(1, 1, 0)
         return fsm.EVENT_DONE
 
     def _state_out(self):
-        self.driver.led_idle()
-        self.driver.set_status_color(1, 0, 0)
         return fsm.EVENT_DONE
 
-    # TODO: Make the hard out blink the status led
     def _state_hard_out(self):
-        self.driver.led_idle()
-        self.driver.set_status_color(1, 0, 0)
         return fsm.EVENT_DONE
 
     def _state_current_sense(self):
         return fsm.EVENT_DONE
 
     def _state_error(self):
-        self.driver.led_idle()
-        self.driver.set_status_color(1, 0, 0)
         return fsm.EVENT_DONE
 
     def _state_pouring(self):
-        self.driver.led_dispense()
-
         recipe = {}
         size = 0
         log_lines = {}
@@ -296,7 +282,7 @@ class Mixer(object):
                     recipe[i] =  ml
                     size += ml
                     log_lines[i] = "  %-2d %-32s %d ml" % (i, "%s (%d)" % (disp.booze.name, disp.booze.id), ml)
-                    self.driver.set_motor_direction(i, MOTOR_DIRECTION_FORWARD);
+                    self.driver.set_motor_direction(i, MOTOR_DIRECTION_FORWARD)
                     continue
 
             if not found:
@@ -330,13 +316,11 @@ class Mixer(object):
         return fsm.EVENT_POUR_DONE
 
     def _state_pour_done(self):
-        self.driver.led_complete()
         PourCompleteDelay(self).start()
 
         return fsm.EVENT_POST_POUR_DONE
 
     def reset(self):
-        self.driver.led_idle()
         app.globals.set_state(fsm.STATE_START)
         self.do_event(fsm.EVENT_START)
 
@@ -507,15 +491,16 @@ class Mixer(object):
         for disp in recipe:
             if not recipe[disp]:
                 continue
-            ticks = int(recipe[disp] * TICKS_PER_ML)
+            duration = float(recipe[disp]) / float(ML_PER_SECOND)
             if recipe[disp] < SLOW_DISPENSE_THRESHOLD and not always_fast:
                 speed = HALF_SPEED 
             else:
                 speed = FULL_SPEED 
 
-            self.driver.set_motor_direction(disp, MOTOR_DIRECTION_FORWARD);
-            if not self.driver.dispense_ticks(disp, ticks, speed):
-                raise BartendroBrokenError("Dispense error. Dispense %d ticks, speed %d on dispenser %d failed." % (ticks, speed, disp + 1))
+            self.driver.set_motor_direction(disp, MOTOR_DIRECTION_FORWARD)
+            
+            if not self.driver.dispense_time(disp, duration):
+                raise BartendroBrokenError("Dispense error. Dispense %d ml in duration %d s, speed %d on dispenser %d failed." % (recipe[disp], duration, speed, disp + 1))
 
             active_disp.append(disp)
             sleep(.01)
@@ -523,7 +508,7 @@ class Mixer(object):
         for disp in active_disp:
             while True:
                 (is_dispensing, over_current) = app.driver.is_dispensing(disp)
-                log.debug("is_disp %d, over_cur %d" % (is_dispensing, over_current))
+                #log.debug("is_disp %d, over_cur %d" % (is_dispensing, over_current))
 
                 # If we get errors here, try again. Running motors can cause noisy comm lines
                 if is_dispensing < 0 or over_current < 0:

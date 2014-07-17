@@ -34,7 +34,6 @@ class CleanCycle(object):
             for d in xrange(self.mixer.disp_count):
                 disp_list.append(d)
 
-        self.mixer.driver.led_clean()
         for disp in disp_list:
             self.mixer.driver.set_motor_direction(disp, MOTOR_DIRECTION_FORWARD);
             self.mixer.driver.start(disp)
@@ -48,7 +47,7 @@ class CleanCycle(object):
         # Give bartendro a moment to collect himself
         sleep(.1)
 
-        self.mixer.driver.led_idle()
+
 
         try:
             self.mixer.check_levels()

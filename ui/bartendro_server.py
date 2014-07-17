@@ -63,7 +63,13 @@ if not os.path.exists("logs"):
 handler = logging.handlers.RotatingFileHandler(os.path.join("logs", "bartendro.log"), 
                                                maxBytes=LOG_SIZE, 
                                                backupCount=LOG_FILES_SAVED)
-logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+
+if args.debug:
+    loglevel = logging.DEBUG
+else:
+    loglevel = logging.INFO
+    
+logging.basicConfig(format='%(levelname)s: %(message)s', level=loglevel)
 logger = logging.getLogger('bartendro')
 logger.addHandler(handler)
 logger.info("Bartendro start up sequence:")

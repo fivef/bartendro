@@ -9,7 +9,7 @@ from bartendro.model.drink import Drink
 from bartendro.model.booze import Booze
 from bartendro.model.dispenser import Dispenser
 from bartendro.form.dispenser import DispenserForm
-from bartendro.mixer import CALIBRATE_ML
+from bartendro.mixer import ML_PER_SECOND
 from operator import itemgetter
 from bartendro import fsm
 from bartendro.mixer import LL_OK
@@ -72,7 +72,7 @@ def dispenser():
     avail_drinks = app.mixer.get_available_drink_list()
     return render_template("admin/dispenser", 
                            title="Dispensers",
-                           calibrate_ml=CALIBRATE_ML, 
+                           calibrate_ml=ML_PER_SECOND, 
                            form=form, count=count, 
                            fields=fields, 
                            saved=saved,
