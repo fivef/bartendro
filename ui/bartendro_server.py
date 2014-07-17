@@ -78,7 +78,7 @@ try:
     app.no_router = args.no_router or int(os.environ['BARTENDRO_NO_ROUTER'])
     app.num_dispensers = 1
 except KeyError:
-    app.software_only = 0
+    app.no_router = 0
 
 if not os.path.exists("bartendro.db"):
     print "bartendro.db file not found. Please copy bartendro.db.default to "
