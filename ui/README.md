@@ -1,6 +1,7 @@
 Installation
 ============
-```sudo apt-get install nginx uwsgi-plugin-python python-werkzeug python-jinja2 python-setuptools python-wtforms python-serial python-smbus python-sqlite python-sqlalchemy memcached python-memcache python-flask sqlite3 -y```
+```sudo apt-get update```
+```sudo apt-get install nginx uwsgi-plugin-python python-werkzeug python-jinja2 python-setuptools python-wtforms python-serial python-smbus python-sqlite python-sqlalchemy python-pip memcached python-memcache python-flask sqlite3 -y```
 
 ```sudo pip install flask-sqlalchemy flask-login```
 
