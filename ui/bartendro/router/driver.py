@@ -9,11 +9,13 @@ import random
 
 
 #import RPi GPIO if this is not available import the RPi GPIO simulation
+
 try:
     import RPi.GPIO as GPIO
 except ImportError:
-    #log.warn("Warning: Unable to import RPi.GPIO. Running in a RPi GPIO simulation mode!!!!\n")
-    import RPi.GPIOSIM as GPIO
+  
+    print "\nUnable to import RPi.GPIO! Automatically switched to simulation mode!!! If you are on a Raspberry Pi try sudo apt-get install python-rpi.gpio -y\n"
+    import RPiSIM.GPIO as GPIO
 
 #add all gpios here which are connected to a pump/valve, they will be numerated in the order of appearance
 GPIOOutputs = [22, 27]
