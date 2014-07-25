@@ -1,7 +1,6 @@
 *.pyc
 *.pyo
 *.swp
-*.db
 .DS_Store
 *.obj
 *.o
