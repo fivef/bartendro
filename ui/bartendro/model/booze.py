@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from bartendro import db
 from sqlalchemy.orm import mapper, relationship
-from sqlalchemy import Table, Column, Integer, String, MetaData, Unicode, UnicodeText, UniqueConstraint, Text, Index
+from sqlalchemy import Table, Column, Integer, Numeric, String, MetaData, Unicode, UnicodeText, UniqueConstraint, Text, Index
 from sqlalchemy.ext.declarative import declarative_base
 
 BOOZE_TYPE_UNKNOWN = 0
@@ -27,12 +27,13 @@ class Booze(db.Model):
     desc = Column(UnicodeText, nullable=False)
     abv = Column(Integer, default=0)
     type = Column(Integer, default=0)
+    flowrate = Column(Numeric, default=0)
 
     # add unique constraint for name
     UniqueConstraint('name', name='booze_name_undx')
  
     query = db.session.query_property()
-    def __init__(self, name = u'', brand = u'', desc = u'', abv = 0, type = 0, out = 0, data = None):
+    def __init__(self, name = u'', brand = u'', desc = u'', abv = 0, type = 0, out = 0, flowrate = 0, data = None):
         if data: 
             self.update(data)
             return
@@ -42,6 +43,7 @@ class Booze(db.Model):
         self.abv = abv
         self.type = type
         self.out = out
+        self.flowrate = flowrate
 
     def update(self, data):
         self.name = data['name']
@@ -49,6 +51,7 @@ class Booze(db.Model):
         self.brand = data['brand']
         self.abv = int(data['abv'])
         self.type = int(data['type'])
+        self.flowrate = data['flowrate']
 
     def is_abstract(self):
         return len(self.booze_group)

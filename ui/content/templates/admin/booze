@@ -11,30 +11,44 @@
        {% else %}
            <div class="forms">
        {% endif %}
+       
           <form method="POST" action="/admin/booze/save">
+          
              {% if booze and booze.is_abstract() %}
                  <p>NOTE: This is the placeholder booze for a booze group!</p></br>
              {% endif %}
+             
              <div>{{ form.name.label }}{{ form.name(class="form-element") }}</div>
              {% if form.name.errors %}
                  <ul class="errors">{% for error in form.name.errors %}<li>{{ error }}</li>{% endfor %}</ul>
              {% endif %}
+             
              <div>{{ form.desc.label }}{{ form.desc(class="form-element") }}</div>
              {% if form.desc.errors %}
                  <ul class="errors">{% for error in form.desc.errors %}<li>{{ error }}</li>{% endfor %}</ul>
              {% endif %}
+             
              <div>{{ form.abv.label }}{{ form.abv(class="form-element") }}</div>
              {% if form.abv.errors %}
                  <ul class="errors">{% for error in form.abv.errors %}<li>{{ error }}</li>{% endfor %}</ul>
              {% endif %}
+             
              <div>{{ form.type.label }}{{ form.type(class="form-element") }}</div>
              {% if form.type.errors %}
                  <ul class="errors">{% for error in form.type.errors %}<li>{{ error }}</li>{% endfor %}</ul>
              {% endif %}
+             
+             <div>{{ form.flowrate.label }}{{ form.flowrate(class="form-element") }}</div>
+             {% if form.abv.errors %}
+                 <ul class="errors">{% for error in form.abv.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+             {% endif %}
+             
              {{ form.id() }}
+             
              <div style="margin-top: 20px">
                  {{ form.save(class="btn btn-large btn-primary submit-button") }}
              </div>
+             
           </form>
        </div>
     </div>
