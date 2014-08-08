@@ -13,7 +13,7 @@ from werkzeug.exceptions import InternalServerError, BadRequest
 from bartendro.model.option import Option
 from bartendro.options import bartendro_options
 import types
-from decimal import *
+
 
 DB_BACKUP_DIR = '.db-backups'
 
@@ -30,7 +30,7 @@ def ws_options():
                 elif isinstance(bartendro_options[o.key], types.UnicodeType):
                    value = unicode(o.value)
                 elif isinstance(bartendro_options[o.key], types.FloatType):
-                   value = Decimal(o.value)
+                   value = float(o.value)
                 elif isinstance(bartendro_options[o.key], types.BooleanType):
                    value = boolean(o.value)
                 else:

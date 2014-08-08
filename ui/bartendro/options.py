@@ -5,7 +5,6 @@ from bartendro.model.option import Option
 from bartendro.model.shot_log import ShotLog
 from sqlalchemy.exc import OperationalError
 import types
-from decimal import *
 
 log = logging.getLogger('bartendro')
 
@@ -95,7 +94,7 @@ def load_options():
             elif isinstance(bartendro_options[o.key], types.UnicodeType):
                value = unicode(o.value)
             elif isinstance(bartendro_options[o.key], types.FloatType):
-               value = Decimal(o.value)
+               value = float(o.value)
             elif isinstance(bartendro_options[o.key], types.BooleanType):
                value = boolean(o.value)
             else:
