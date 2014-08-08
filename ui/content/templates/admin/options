@@ -86,6 +86,11 @@
                         <label for="option-test-dispense-size">Test dispense size</label>
                         <input id="option-test-dispense-size" name="option-test-dispense-size" type="text"></input>
                     </div>
+                    
+                    <div>
+                        <label for="option-default-flowrate">Default flowrate in ml/s (used if the flowrate for a booze was not set or is set to 0)</label>
+                        <input id="option-default-flowrate" name="option-default-flowrate" type="text"></input>
+                    </div>
                 </div>
                 <div class="div-spacer"/>
                 {% if not options.i_am_shotbot %}
@@ -244,6 +249,13 @@ $(document).ready(function()
                 minlength: 1,
                 maxlength: 1,
                 digits : true
+            },
+            'option-default-flowrate' : {
+                required: true,
+                minlength: 1,
+                maxlength: 10,
+                max: 1000,
+                number: true
             }
         }
     });
@@ -308,6 +320,9 @@ function set_options(opts)
     $('#option-shot-size').val(opts['shot_size']);
     $('#option-taster-size').val(opts['taster_size']);
     $('#option-test-dispense-size').val(opts['test_dispense_ml']);
+    $('#option-default-flowrate').val(opts['default_flowrate']);
+    
+    
 
     if (opts['show_taster'])
         $('#option-show-taster').prop("checked", true);
@@ -345,6 +360,7 @@ function save()
     options['show_size'] = $("#option-show-drink-size").prop("checked") ? 1 : 0;
     options['show_strength'] = $("#option-show-strength").prop("checked") ? 1 : 0;
     options['strength_steps'] = $("#option-strength-steps").val();
+    options['default_flowrate'] = $("#option-default-flowrate").val();
 
     j = {}
     j['options'] = options;

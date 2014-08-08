@@ -147,7 +147,7 @@ class RouterDriver(object):
         return (self.dispensers[dispenser].is_dispensing(), False)
        
     def set_motor_direction(self, dispenser, direction):
-        log.info("Set motor direction to " + str(direction) + ".\n")
+        #log.info("Set motor direction to " + str(direction) + ".\n")
         if self.software_only: return True
         #todo set motor direction
         return True

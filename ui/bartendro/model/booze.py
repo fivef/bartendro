@@ -28,12 +28,14 @@ class Booze(db.Model):
     abv = Column(Integer, default=0)
     type = Column(Integer, default=0)
     flowrate = Column(Numeric, default=0)
+    price = Column(Numeric, default=0)
+    amount = Column(Numeric, default=1)
 
     # add unique constraint for name
     UniqueConstraint('name', name='booze_name_undx')
  
     query = db.session.query_property()
-    def __init__(self, name = u'', brand = u'', desc = u'', abv = 0, type = 0, out = 0, flowrate = 0, data = None):
+    def __init__(self, name = u'', brand = u'', desc = u'', abv = 0, type = 0, out = 0, flowrate = 0, price = 0, amount = 1, data = None):
         if data: 
             self.update(data)
             return
@@ -44,6 +46,8 @@ class Booze(db.Model):
         self.type = type
         self.out = out
         self.flowrate = flowrate
+        self.price = price
+        self.amount = amount
 
     def update(self, data):
         self.name = data['name']
@@ -52,6 +56,8 @@ class Booze(db.Model):
         self.abv = int(data['abv'])
         self.type = int(data['type'])
         self.flowrate = data['flowrate']
+        self.price = data['price']
+        self.amount = data['amount']
 
     def is_abstract(self):
         return len(self.booze_group)

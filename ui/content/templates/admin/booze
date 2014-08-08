@@ -39,8 +39,19 @@
              {% endif %}
              
              <div>{{ form.flowrate.label }}{{ form.flowrate(class="form-element") }}</div>
-             {% if form.abv.errors %}
-                 <ul class="errors">{% for error in form.abv.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+             {% if form.flowrate.errors %}
+                 <ul class="errors">{% for error in form.flowrate.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+             {% endif %}
+             
+             <div>{{ form.price.label }}{{ form.price(class="form-element") }}</div>
+             {% if form.price.errors %}
+                 <ul class="errors">{% for error in form.price.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+             {% endif %}
+             
+             
+              <div>{{ form.amount.label }}{{ form.amount(class="form-element") }}</div>
+             {% if form.amount.errors %}
+                 <ul class="errors">{% for error in form.amount.errors %}<li>{{ error }}</li>{% endfor %}</ul>
              {% endif %}
              
              {{ form.id() }}

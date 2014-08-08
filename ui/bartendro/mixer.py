@@ -3,6 +3,7 @@ import logging
 import sys
 import traceback
 from time import sleep, time
+from decimal import *
 from threading import Thread
 from flask import Flask, current_app
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -14,6 +15,8 @@ from bartendro.clean import CleanCycle
 from bartendro.pourcomplete import PourCompleteDelay
 from bartendro.router.driver import MOTOR_DIRECTION_FORWARD
 from bartendro.model.drink import Drink
+from bartendro.model.booze import Booze
+from bartendro.model.option import Option
 from bartendro.model.dispenser import Dispenser
 from bartendro.model.drink_log import DrinkLog
 from bartendro.model.shot_log import ShotLog
@@ -22,8 +25,6 @@ from bartendro.error import BartendroBusyError, BartendroBrokenError, BartendroC
 
 ML_PER_SECOND = 10.1
 
-FULL_SPEED = 255
-HALF_SPEED = 166
 SLOW_DISPENSE_THRESHOLD = 20 # ml
 MAX_DISPENSE = 1000 # ml max dispense per call. Just for sanity. :)
 
@@ -261,6 +262,7 @@ class Mixer(object):
         log_lines = {}
         dispensers = db.session.query(Dispenser).order_by(Dispenser.id).all()
         for booze_id in sorted(self.recipe.data.keys()):
+                       
             found = False
             for i in xrange(self.disp_count):
                 disp = dispensers[i]
@@ -310,7 +312,7 @@ class Mixer(object):
         for i in xrange(self.disp_count):
             if booze_id == dispensers[i].booze_id:
                 recipe[i] =  ml
-                self._dispense_recipe(recipe, True)
+                self._dispense_recipe(recipe)
                 break
 
         return fsm.EVENT_POUR_DONE
@@ -485,22 +487,36 @@ class Mixer(object):
 
         return ll_state
 
-    def _dispense_recipe(self, recipe, always_fast = False):
+    def _dispense_recipe(self, recipe):
 
         active_disp = []
+
         for disp in recipe:
             if not recipe[disp]:
                 continue
-            duration = float(recipe[disp]) / float(ML_PER_SECOND)
-            if recipe[disp] < SLOW_DISPENSE_THRESHOLD and not always_fast:
-                speed = HALF_SPEED 
-            else:
-                speed = FULL_SPEED 
+            
+            #Here it is a lot of effort to get the flowrate but it seems to be the best position
+            
+            #first get the dispenser
+            dispenser = Dispenser.query.filter_by(id=int(disp)+1).first()
+            
+            #get the flowrate for the dispenser by finding the booze connected to the dispenser   
+            booze = Booze.query.filter_by(id=int(dispenser.booze_id)).first()        
+            flowrate = Decimal(booze.flowrate)
+            
+            
+            if flowrate < 0.0001:
+                #set default flowrate
+                flowrate = Decimal(Option.query.filter_by(key="default_flowrate").first().value)
+                
+            log.info("Booze %s with flowrate %3.2f ml/s" % (booze.name, flowrate))
+            
+            duration = Decimal(recipe[disp]) / flowrate
 
             self.driver.set_motor_direction(disp, MOTOR_DIRECTION_FORWARD)
             
             if not self.driver.dispense_time(disp, duration):
-                raise BartendroBrokenError("Dispense error. Dispense %d ml in duration %d s, speed %d on dispenser %d failed." % (recipe[disp], duration, speed, disp + 1))
+                raise BartendroBrokenError("Dispense error. Dispense %d ml in duration %d s on dispenser %d failed." % (recipe[disp], duration, disp + 1))
 
             active_disp.append(disp)
             sleep(.01)

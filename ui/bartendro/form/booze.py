@@ -13,6 +13,8 @@ class BoozeForm(Form):
                                 choices=booze.booze_types,
                                 coerce=int)
     flowrate = DecimalField(u"Flowrate (ml/s)", [validators.NumberRange(0, 100)], default=0, places=2)
+    price = DecimalField(u"Price (Euro/l)", [validators.NumberRange(0, 100)], default=0, places=2)
+    amount = DecimalField(u"Available amount (l)", [validators.NumberRange(0, 100)], default=1, places=4)
     save = SubmitField(u"save")
     cancel = SubmitField(u"cancel")
 
