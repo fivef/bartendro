@@ -17,6 +17,7 @@ except ImportError:
     print "\nUnable to import RPi.GPIO! Automatically switched to simulation mode!!! If you are on a Raspberry Pi try sudo apt-get install python-rpi.gpio -y\n"
     import RPiSIM.GPIO as GPIO
 
+#change this if you want to add more gpios / dispensers / valves / pumps
 #add all gpios here which are connected to a pump/valve, they will be numerated in the order of appearance
 GPIOOutputs = [22, 27]
 
@@ -57,11 +58,11 @@ class Dispenser():
     
 
 class RouterDriver(object):
-    '''This object interacts with the bartendro router controller.'''
+    '''This object interacts with the rasppi'''
 
-    def __init__(self, device, software_only, no_router=False):
+    def __init__(self):
         log.info("Starting Driver.\n")
-        self.software_only = software_only
+
         self.dispensers = []
         #add dispensers
         for gpio in GPIOOutputs:
@@ -81,8 +82,6 @@ class RouterDriver(object):
         """Reset the hardware. Do this if there is shit going wrong. All motors will be stopped
            and reset."""
         log.info("Reset Hardware. Not implemented.\n")
-        
-        if self.software_only: return
          
         #TODO: reset
    
@@ -92,8 +91,6 @@ class RouterDriver(object):
     def open(self):
         '''Setup GPIOs'''
         log.info("Setup GPIOS.\n")
-
-        if self.software_only: return
 
         # use GPIO pin numbering convention (not the actual pin numbers)
         GPIO.setmode(GPIO.BCM)
@@ -105,14 +102,10 @@ class RouterDriver(object):
 
         self._clear_startup_log()
 
-    def close(self):
-        if self.software_only: return
-        
-        #todo close connection
+    def close(self):    
+        GPIO.cleanup()
 
     def log(self, msg):
-        return
-        if self.software_only: return
         try:
             t = localtime()
             self.cl.write("%d-%d-%d %d:%02d %s" % (t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, msg))
@@ -122,57 +115,53 @@ class RouterDriver(object):
 
     def dispense_time(self, dispenser, duration):
         log.info("Start dispensing on dispenser " + str(dispenser) + " for " + str(duration) + " seconds.\n")
-        if self.software_only: return True     
+             
         self.dispensers[dispenser].pour_for_duration(duration)
         return True
 
     def ping(self, dispenser):
         log.info("Ping not implemented.\n")
-        if self.software_only: return True
+        
         return True
 
     def start(self, dispenser):
-        if self.software_only: return True
+        
         return self.dispensers[dispenser].start_dispensing()
   
     def stop(self, dispenser):
-        if self.software_only: return True
+        
         return self.dispensers[dispenser].stop_dispensing()
        
     def is_dispensing(self, dispenser):
         """
         Returns a tuple of (dispensing, is_over_current) 
         """
-        if self.software_only: return (False, False)
         return (self.dispensers[dispenser].is_dispensing(), False)
        
     def set_motor_direction(self, dispenser, direction):
         #log.info("Set motor direction to " + str(direction) + ".\n")
-        if self.software_only: return True
+
         #todo set motor direction
         return True
 
     def update_liquid_levels(self):
         log.info("Update liquid level.\n")
-        if self.software_only: return True
+
         return True
 
 
     def get_liquid_level(self, dispenser):
         log.info("Get liquid level.\n")
-        if self.software_only: return 100
         #todo liquid level?
         return 100
 
     def get_liquid_level_thresholds(self, dispenser):
         log.info("Get liquid level thersholds.\n")
-        if self.software_only: return True
         return True
         
                 
     def set_liquid_level_thresholds(self, dispenser, low, out):
         log.info("Set liquid level thersholds. Low: " + str(low) + " Out: " + str(out) + "\n")
-        if self.software_only: return True
         return True
 
 

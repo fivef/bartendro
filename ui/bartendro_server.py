@@ -101,29 +101,10 @@ app.globals = BartendroGlobalLock()
 startup_err = ""
 # Start the driver, which talks to the hardware
 try:
-    app.driver = driver.RouterDriver("/dev/ttyAMA0", app.software_only, app.no_router);
+    app.driver = driver.RouterDriver();
     app.driver.open()
     logging.info("Found %d dispensers." % app.driver.count())
-except I2CIOError:
-    err = "Cannot open I2C interface to a router board."
-    if have_uwsgi:
-        startup_err = err
-    else:
-        print
-        print err
-        print
-        print_software_only_notice()
-        sys.exit(-1)
-except SerialIOError:
-    err = "Cannot open serial interface to a router board."
-    if have_uwsgi:
-        startup_err = err
-    else:
-        print
-        print err
-        print
-        print_software_only_notice()
-        sys.exit(-1)
+
 except:
     err = traceback.format_exc()
     if have_uwsgi:
@@ -132,7 +113,6 @@ except:
         print
         print err
         print
-        print_software_only_notice()
         sys.exit(-1)
 
 app.startup_err = startup_err
@@ -142,8 +122,6 @@ if app.startup_err:
 else:
     app.options = load_options()
     app.mixer = mixer.Mixer(app.driver, app.mc)
-    if app.software_only:
-        logging.info("Running SOFTWARE ONLY VERSION. No communication between software and hardware chain will happen!")
 
     logging.info("Bartendro started")
     app.debug = args.debug
