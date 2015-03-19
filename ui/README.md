@@ -9,16 +9,7 @@ Raspberry Pi (Raspian)
 ----------------------
 Additionally ```sudo apt-get install python-rpi.gpio -y```
 
-Additional Information
-----------------------
-werkzeug - http://werkzeug.pocoo.org/docs/
-jinja2 - http://jinja.pocoo.org/docs/
-wtforms - http://wtforms.simplecodes.com/
 
-flask-sqlalchemy & flask-login archives if not using pip:
-
-   https://pypi.python.org/packages/source/F/Flask-SQLAlchemy/Flask-SQLAlchemy-0.16.tar.gz
-   https://pypi.python.org/packages/source/F/Flask-Login/Flask-Login-0.1.3.tar.gz
 
 Starting Bartendro UI for the first time
 ========================================
@@ -42,11 +33,9 @@ Starting
 
 Then, once you're ready, run:
 
-   # sudo ./bartendro_server --debug
+   # sudo ./ui/bartendro_server.py --debug
 
-That should start the server on all interfaces on your machine. Bartendro's WiFi address is 
-always 10.0.0.1 and the wired ethernet ip address is assigned by DHCP. To see the addresses
-for Bartendro, see the Network Info box on the options page.
+That should start the server on all interfaces on your machine. 
 
 Software only mode
 ------------------
@@ -61,3 +50,14 @@ and fail. In the software only mode the bartendro UI will run an attempt to do e
 it can, short of actually communicating with the hardware. If you are running in
 software only mode, you do no need to run the bartendro_server.py program under sudo. Sudo
 rights are only needed to communicate with the hardware.
+
+Additional Information
+----------------------
+werkzeug - http://werkzeug.pocoo.org/docs/
+jinja2 - http://jinja.pocoo.org/docs/
+wtforms - http://wtforms.simplecodes.com/
+
+flask-sqlalchemy & flask-login archives if not using pip:
+
+   https://pypi.python.org/packages/source/F/Flask-SQLAlchemy/Flask-SQLAlchemy-0.16.tar.gz
+   https://pypi.python.org/packages/source/F/Flask-Login/Flask-Login-0.1.3.tar.gz

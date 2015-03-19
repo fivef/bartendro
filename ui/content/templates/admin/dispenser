@@ -43,6 +43,9 @@
                                 <a class="btn btn-large btn-success motor-button" id="disp_reverse{{ i }}" onclick="toggle_reverse({{ i }})">reverse</a>
                             {% endif %}
                             <a class="btn btn-large btn-success test-dispense-button" id="test{{ i }}" onclick="test_dispense({{ i }})">dispense {{ options.test_dispense_ml }}ml</a>
+                            
+                            <a class="btn btn-large btn-success calibrate-button" id="calibrate{{ i }}" onclick="calibrate({{ i }})">Calibrate</a>
+                            
                         </div>
                     {% endfor %}
                     <div class="div-spacer">
