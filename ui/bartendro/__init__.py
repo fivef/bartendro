@@ -21,6 +21,8 @@ app = Flask(__name__,
 app.config.from_object(__name__)
 db = SQLAlchemy(app)
 
+
+
 login_manager = LoginManager()
 login_manager.login_view = "/admin/login"
 login_manager.setup_app(app)
@@ -40,6 +42,9 @@ from bartendro.model.drink_log import DrinkLog
 from bartendro.model.shot_log import ShotLog
 from bartendro.model.version import DatabaseVersion
 from bartendro.model.option import Option
+
+db.create_all()
+db.session.commit()
 
 Drink.name = relationship(DrinkName, backref=backref("drink"))
 
@@ -66,6 +71,8 @@ from bartendro.view.admin import booze as booze_admin, drink as drink_admin, \
 from bartendro.view.drink import drink
 from bartendro.view.ws import booze as ws_booze, dispenser as ws_dispenser, drink as ws_drink, \
                               misc as ws_misc, liquidlevel, option as ws_options
+
+
 
 @app.before_request
 def before_request(exception=None):

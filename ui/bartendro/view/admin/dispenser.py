@@ -14,10 +14,13 @@ from operator import itemgetter
 from bartendro import fsm
 from bartendro.mixer import LL_OK
 
+count = 0
+
 @app.route('/admin')
 @login_required
 def dispenser():
     driver = app.driver
+    global count
     count = driver.count()
 
     saved = int(request.args.get('saved', "0"))
@@ -93,6 +96,22 @@ def save():
     form = DispenserForm(request.form)
     if request.method == 'POST' and form.validate():
         dispensers = db.session.query(Dispenser).order_by(Dispenser.id).all()
+
+        print "dispensers: %s" % dispensers
+
+        print "count: %s " % count
+
+        booze = db.session.query(Booze).first()
+        print booze
+
+        #create dispenser database entry if not available
+        if len(dispensers) < count:
+            for counter in range(len(dispensers) + 1,count +1):
+
+                db.session.add(Dispenser(booze=booze, actual=booze.id))
+                print "Added dispenser with id %s " % counter
+                db.session.commit()
+
         for dispenser in dispensers:
             try:
                 dispenser.booze_id = request.form['dispenser%d' % dispenser.id]

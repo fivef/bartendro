@@ -21,7 +21,7 @@ def get_ip_address_from_interface(ifname):
 @app.route('/admin/options')
 @login_required
 def admin_options():
-    ver = DatabaseVersion.query.one()
+    #ver = DatabaseVersion.query.one()
     recover = not request.remote_addr.startswith("10.0.0")
 
     wlan0 = get_ip_address_from_interface("wlan0")
@@ -34,7 +34,7 @@ def admin_options():
                            eth0=eth0,
                            wlan0=wlan0,
                            version = app.version,
-                           schema = ver.schema)
+                           schema = 1)
 
 @app.route('/admin/lost-passwd')
 def admin_lost_passwd():
