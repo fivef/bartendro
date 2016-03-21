@@ -1,4 +1,4 @@
-#!/bin/sh
+#/bin/bash
 
-cd /home/robert/bartendro/ui
-./bartendro_server.py &
+cd /home/pi/dev/bartendro/ui/
+sudo python bartendro_server.py -t 192.168.0.1

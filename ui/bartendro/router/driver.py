@@ -19,7 +19,7 @@ except ImportError:
 
 #change this if you want to add more gpios / dispensers / valves / pumps
 #add all gpios here which are connected to a pump/valve, they will be numerated in the order of appearance
-GPIOOutputs = [22, 27, 17]
+GPIOOutputs = [4, 17, 27, 22, 18, 23, 24, 25]
 
 MOTOR_DIRECTION_FORWARD       = 1
 MOTOR_DIRECTION_BACKWARD      = 0
