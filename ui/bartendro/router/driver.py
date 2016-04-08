@@ -22,7 +22,7 @@ except ImportError:
 GPIOOutputs =  [2, 3, 4, 17, 27, 22, 18, 23, 24, 25, 8, 7]
 
 #with this list specific output pins can be inverted. 0 means normally LOW, 1 means normally HIGH
-INVERTED_PINS = [1, 1, 1, 1,  1,  1,  1,  1,  0,  0,  0, 1]
+INVERTED_PINS = [1, 1, 1, 1,  1,  1,  1,  1,  1,  1,  1, 1]
 
 MOTOR_DIRECTION_FORWARD       = 1
 MOTOR_DIRECTION_BACKWARD      = 0
