@@ -19,7 +19,10 @@ except ImportError:
 
 #change this if you want to add more gpios / dispensers / valves / pumps
 #add all gpios here which are connected to a pump/valve, they will be numerated in the order of appearance
-GPIOOutputs = [2, 3, 4, 17, 27, 22, 18, 23, 24, 25, 8, 7]
+GPIOOutputs =  [2, 3, 4, 17, 27, 22, 18, 23, 24, 25, 8, 7]
+
+#with this list specific output pins can be inverted. 0 means normally LOW, 1 means normally HIGH
+INVERTED_PINS = [1, 1, 1, 1,  1,  1,  1,  1,  0,  0,  0, 1]
 
 MOTOR_DIRECTION_FORWARD       = 1
 MOTOR_DIRECTION_BACKWARD      = 0
@@ -28,8 +31,9 @@ log = logging.getLogger('bartendro')
 
 class Dispenser():
     
-    def __init__(self, gpio):
+    def __init__(self, gpio, inverted):
         self.gpio = gpio
+        self.inverted = inverted
         self.dispensing = False
         self.dispensing_thread = None
         
@@ -40,14 +44,22 @@ class Dispenser():
         self.dispensing_thread = DispenseForDurationThread(self, duration).start()
             
     def start_dispensing(self):
-        GPIO.output(self.gpio, GPIO.LOW)
+        if self.inverted:
+            GPIO.output(self.gpio, GPIO.LOW)
+        else:
+            GPIO.output(self.gpio, GPIO.HIGH)
+
         self.dispensing = True
         log.info("GPIO: " + str(self.gpio) + " start dispensing.\n")
         #todo error handling 
         return True
         
     def stop_dispensing(self):
-        GPIO.output(self.gpio, GPIO.HIGH)
+        if self.inverted:
+            GPIO.output(self.gpio, GPIO.HIGH)
+        else:
+            GPIO.output(self.gpio, GPIO.LOW)
+
         self.dispensing = False
         log.info("GPIO: " + str(self.gpio) + " stop dispensing.\n")
         #todo error handling 
@@ -65,8 +77,8 @@ class RouterDriver(object):
 
         self.dispensers = []
         #add dispensers
-        for gpio in GPIOOutputs:
-            self.dispensers.append(Dispenser(gpio))
+        for index, gpio in enumerate(GPIOOutputs):
+            self.dispensers.append(Dispenser(gpio, INVERTED_PINS[index]))
             
         self.startup_log = ""
         self.num_dispensers = len(self.dispensers)
@@ -98,8 +110,10 @@ class RouterDriver(object):
         #define all gpios given in gpiooutputs as outputs
         for dispenser in self.dispensers:
             GPIO.setup(dispenser.get_gpio_number(), GPIO.OUT)
-            GPIO.output(dispenser.get_gpio_number(), GPIO.HIGH)
-
+            if dispenser.inverted:
+                GPIO.output(dispenser.get_gpio_number(), GPIO.HIGH)
+            else:
+                GPIO.output(dispenser.get_gpio_number(), GPIO.LOW)
         self._clear_startup_log()
 
     def close(self):    
