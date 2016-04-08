@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import socket
-import fcntl
+#import fcntl
 import struct
 import time
 import os
@@ -11,12 +11,15 @@ from flask.ext.login import login_required
 from bartendro.model.version import DatabaseVersion
 
 def get_ip_address_from_interface(ifname):
+    return "127.0.0.1"
+    """
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         return socket.inet_ntoa(fcntl.ioctl(s.fileno(), 0x8915,  
                                 struct.pack('256s', ifname[:15]))[20:24])
     except IOError:
         return "[none]"
+    """
 
 @app.route('/admin/options')
 @login_required

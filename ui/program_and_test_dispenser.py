@@ -19,7 +19,7 @@ args = parser.parse_args()
 
 def test(ll):
     try:
-        subprocess.check_call(["make", "-C", "../firmware/dispenser", "dispenser"])
+        subprocess.check_call(["make", "-C", "../firmware/dispenser", "dispenser"], shell=True)
     except subprocess.CalledProcessError:
         print "Failed to program dispenser!"
         sys.exit(-1)
