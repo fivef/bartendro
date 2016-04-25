@@ -519,7 +519,6 @@ class Mixer(object):
                 raise BartendroBrokenError("Dispense error. Dispense %d ml in duration %d s on dispenser %d failed." % (recipe[disp], duration, disp + 1))
 
             active_disp.append(disp)
-            sleep(.01)
 
         for disp in active_disp:
             while True:
