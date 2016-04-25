@@ -520,6 +520,14 @@ class Mixer(object):
 
             active_disp.append(disp)
 
+        #TODO: set stir_dispenser and duration via options
+        stir_dispenser = 11
+        log.info("Start stirrer on dispenser %s" % stir_dispenser)
+        if not self.driver.dispense_time(stir_dispenser, duration=5.0):
+            raise BartendroBrokenError("Stirring on dispenser %s failed." % stir_dispenser)
+
+        active_disp.append(stir_dispenser)
+
         for disp in active_disp:
             while True:
                 (is_dispensing, over_current) = app.driver.is_dispensing(disp)
@@ -538,6 +546,7 @@ class Mixer(object):
                     break 
 
                 sleep(.1)
+
 
     def _can_make_drink(self, boozes, booze_dict):
         ok = True
