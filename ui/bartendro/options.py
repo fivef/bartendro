@@ -24,7 +24,8 @@ bartendro_options = {
     u'strength_steps'          : 2,
     u'use_shotbot_ui'          : False,
     u'show_feeling_lucky'      : False,
-    u'default_flowrate'        : 10.0
+    u'default_flowrate'        : 10.0,
+    u'stir_duration'           : 5.0
 }
 
 class BadConfigOptionsError(Exception):

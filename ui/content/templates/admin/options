@@ -97,6 +97,10 @@
                     <h4>Drink options</h4>
                     <div style="margin-left: 15px">
                         <div>
+                            <label for="option-default-stir_duration">Default time in seconds a drink is stirred.</label>
+                            <input id="option-default-stir_duration" name="option-default-stir_duration" type="text"></input>
+                        </div>
+                        <div>
                             <label for="option-show-taster" class="checkbox">
                                 <input id="option-show-taster" name="option-show-taster" type="checkbox"></input>
                                 Show taster button
@@ -256,6 +260,13 @@ $(document).ready(function()
                 maxlength: 10,
                 max: 1000,
                 number: true
+            },
+            'option-default-stir_duration' : {
+                required: true,
+                minlength: 1,
+                maxlength: 10,
+                max: 1000,
+                number: true
             }
         }
     });
@@ -321,8 +332,7 @@ function set_options(opts)
     $('#option-taster-size').val(opts['taster_size']);
     $('#option-test-dispense-size').val(opts['test_dispense_ml']);
     $('#option-default-flowrate').val(opts['default_flowrate']);
-    
-    
+    $('#option-default-stir_duration').val(opts['stir_duration']);
 
     if (opts['show_taster'])
         $('#option-show-taster').prop("checked", true);
@@ -361,6 +371,7 @@ function save()
     options['show_strength'] = $("#option-show-strength").prop("checked") ? 1 : 0;
     options['strength_steps'] = $("#option-strength-steps").val();
     options['default_flowrate'] = $("#option-default-flowrate").val();
+    options['stir_duration'] = $("#option-default-stir_duration").val();
 
     j = {}
     j['options'] = options;

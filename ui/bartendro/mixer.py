@@ -520,10 +520,11 @@ class Mixer(object):
 
             active_disp.append(disp)
 
-        #TODO: set stir_dispenser and duration via options
+        #TODO: set stir_dispenser via options
         stir_dispenser = 11
         log.info("Start stirrer on dispenser %s" % stir_dispenser)
-        if not self.driver.dispense_time(stir_dispenser, duration=5.0):
+        duration = Decimal(Option.query.filter_by(key="stir_duration").first().value)
+        if not self.driver.dispense_time(stir_dispenser, duration):
             raise BartendroBrokenError("Stirring on dispenser %s failed." % stir_dispenser)
 
         active_disp.append(stir_dispenser)
