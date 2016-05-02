@@ -2,21 +2,21 @@
 from bartendro import app, db
 from sqlalchemy import func, asc
 from flask import Flask, request, redirect, render_template
-from flask.ext.login import login_required
 from bartendro.model.drink import Drink
 from bartendro.model.booze import Booze
 from bartendro.model.booze_group import BoozeGroup
 from bartendro.form.booze import BoozeForm
+from flask.ext.permissions.decorators import user_is, user_has
 
 @app.route('/admin/booze')
-@login_required
+@user_is('admin')
 def admin_booze():
     form = BoozeForm(request.form)
     boozes = Booze.query.order_by(asc(func.lower(Booze.name)))
     return render_template("admin/booze", options=app.options, boozes=boozes, form=form, title="Booze")
 
 @app.route('/admin/booze/edit/<id>')
-@login_required
+@user_is('admin')
 def admin_booze_edit(id):
     saved = int(request.args.get('saved', "0"))
     booze = Booze.query.filter_by(id=int(id)).first()
@@ -25,7 +25,7 @@ def admin_booze_edit(id):
     return render_template("admin/booze", options=app.options, booze=booze, boozes=boozes, form=form, title="Booze", saved=saved)
 
 @app.route('/admin/booze/save', methods=['POST'])
-@login_required
+@user_is('admin')
 def admin_booze_save():
 
     cancel = request.form.get("cancel")

@@ -3,7 +3,8 @@
 import os
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.login import LoginManager
+from flask.ext.login import LoginManager, current_user
+from flask.ext.permissions.core import Permissions
 from sqlalchemy.orm import mapper, relationship, backref
 
 SQLALCHEMY_DATABASE_FILE = 'bartendro.db'
@@ -27,6 +28,8 @@ login_manager = LoginManager()
 login_manager.login_view = "/admin/login"
 login_manager.setup_app(app)
 
+permissions = Permissions(app, db, current_user)
+
 # Import models
 from bartendro.model.drink import Drink
 from bartendro.model.custom_drink import CustomDrink
@@ -42,6 +45,7 @@ from bartendro.model.drink_log import DrinkLog
 from bartendro.model.shot_log import ShotLog
 from bartendro.model.version import DatabaseVersion
 from bartendro.model.option import Option
+from bartendro.model.user import User
 
 db.create_all()
 db.session.commit()
@@ -72,7 +76,15 @@ from bartendro.view.drink import drink
 from bartendro.view.ws import booze as ws_booze, dispenser as ws_dispenser, drink as ws_drink, \
                               misc as ws_misc, liquidlevel, option as ws_options
 
+"""
+# Create users (only needed once when database is empty)
+my_user = User("admin","boozemeup")
+my_user.add_roles('admin')
 
+my_user = User("user","user")
+my_user.add_roles('user')
+db.session.commit()
+"""
 
 @app.before_request
 def before_request(exception=None):
