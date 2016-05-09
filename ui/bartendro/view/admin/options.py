@@ -10,6 +10,7 @@ from werkzeug.exceptions import Unauthorized
 from bartendro.model.version import DatabaseVersion
 from flask.ext.permissions.decorators import user_is, user_has
 
+
 def get_ip_address_from_interface(ifname):
     return "127.0.0.1"
     """
@@ -21,6 +22,7 @@ def get_ip_address_from_interface(ifname):
         return "[none]"
     """
 
+
 @app.route('/admin/options')
 @user_is('admin')
 def admin_options():
@@ -30,26 +32,27 @@ def admin_options():
     wlan0 = get_ip_address_from_interface("wlan0")
     eth0 = get_ip_address_from_interface("eth0")
 
-    return render_template("admin/options", 
+    return render_template("admin/options",
                            options=app.options,
                            show_passwd_recovery=recover,
-                           title="Options", 
+                           title="Options",
                            eth0=eth0,
                            wlan0=wlan0,
-                           version = app.version,
-                           schema = 1)
+                           version=app.version,
+                           schema=1)
+
 
 @app.route('/admin/lost-passwd')
 def admin_lost_passwd():
     if request.remote_addr.startswith("10.0.0"):
         raise Unauthorized
 
-    return render_template("admin/lost-passwd", 
-                           options=app.options)
+    return render_template("admin/lost-passwd", options=app.options)
+
 
 @app.route('/admin/upload')
 @user_is('admin')
 def admin_upload_db():
-    return render_template("admin/upload", 
+    return render_template("admin/upload",
                            title="Upload database",
                            options=app.options)

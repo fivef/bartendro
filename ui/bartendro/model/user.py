@@ -24,10 +24,11 @@ class User(UserMixin):
     balance = Column(Numeric, default=0.0)
 
     query = db.session.query_property()
-    
+
     # Identify the class to differentiate between sub-types of the UserMixin.
     __mapper_args__ = {
-        'polymorphic_identity': 'user'  # This can be any unique value except 'usermixin'.
+        'polymorphic_identity':
+        'user'  # This can be any unique value except 'usermixin'.
     }
 
     def __init__(self, name, password, roles=None):

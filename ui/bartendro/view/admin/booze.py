@@ -8,12 +8,18 @@ from bartendro.model.booze_group import BoozeGroup
 from bartendro.form.booze import BoozeForm
 from flask.ext.permissions.decorators import user_is, user_has
 
+
 @app.route('/admin/booze')
 @user_is('admin')
 def admin_booze():
     form = BoozeForm(request.form)
     boozes = Booze.query.order_by(asc(func.lower(Booze.name)))
-    return render_template("admin/booze", options=app.options, boozes=boozes, form=form, title="Booze")
+    return render_template("admin/booze",
+                           options=app.options,
+                           boozes=boozes,
+                           form=form,
+                           title="Booze")
+
 
 @app.route('/admin/booze/edit/<id>')
 @user_is('admin')
@@ -22,7 +28,14 @@ def admin_booze_edit(id):
     booze = Booze.query.filter_by(id=int(id)).first()
     form = BoozeForm(obj=booze)
     boozes = Booze.query.order_by(asc(func.lower(Booze.name)))
-    return render_template("admin/booze", options=app.options, booze=booze, boozes=boozes, form=form, title="Booze", saved=saved)
+    return render_template("admin/booze",
+                           options=app.options,
+                           booze=booze,
+                           boozes=boozes,
+                           form=form,
+                           title="Booze",
+                           saved=saved)
+
 
 @app.route('/admin/booze/save', methods=['POST'])
 @user_is('admin')
@@ -49,4 +62,8 @@ def admin_booze_save():
         return redirect('/admin/booze/edit/%d?saved=1' % booze.id)
 
     boozes = Booze.query.order_by(asc(func.lower(Booze.name)))
-    return render_template("admin/booze", options=app.options, boozes=boozes, form=form, title="")
+    return render_template("admin/booze",
+                           options=app.options,
+                           boozes=boozes,
+                           form=form,
+                           title="")
