@@ -198,8 +198,7 @@
 </div>
 <div id="manual-reload-dialog" title="Bartendro" style="display: none; text-align: center;">
   <p>
-    The options have been saved. In order for these options to take effect, please 
-    restart Bartendro.
+    The options have been saved.
   </p>
 </div>
 <script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
