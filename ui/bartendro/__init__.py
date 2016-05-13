@@ -69,22 +69,22 @@ DrinkLog.drink = relationship(Drink)
 ShotLog.booze = relationship(Booze)
 
 # Import views
-from bartendro.view import root, trending
+from bartendro.view import root, trending, user
 from bartendro.view.admin import booze as booze_admin, drink as drink_admin, \
-                                 dispenser as admin_dispenser, report, liquidlevel, user, options, debug
+                                 dispenser as admin_dispenser, report, liquidlevel, options, debug
 from bartendro.view.drink import drink
 from bartendro.view.ws import booze as ws_booze, dispenser as ws_dispenser, drink as ws_drink, \
                               misc as ws_misc, liquidlevel, option as ws_options
 
-"""
-# Create users (only needed once when database is empty)
-my_user = User("admin","boozemeup")
-my_user.add_roles('admin')
 
-my_user = User("user","user")
-my_user.add_roles('user')
-db.session.commit()
-"""
+# Create users (only needed once when database is empty)
+# my_admin = User("admin", "admin")
+# my_admin.add_roles('admin')
+# 
+# my_user = User("user", "user")
+# my_user.add_roles('user')
+# db.session.commit()
+
 
 @app.before_request
 def before_request(exception=None):

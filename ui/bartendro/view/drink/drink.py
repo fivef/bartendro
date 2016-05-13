@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from bartendro import app, db
 from flask import Flask, request, render_template
+from flask.ext.login import login_required
 from bartendro.model.drink import Drink
 from bartendro.model.drink_booze import DrinkBooze
 from bartendro.model.custom_drink import CustomDrink
@@ -12,11 +13,14 @@ from bartendro.model.drink_name import DrinkName
 from bartendro.model.dispenser import Dispenser
 from bartendro import constant 
 
+
 @app.route('/drink/<int:id>')
+@login_required
 def normal_drink(id):
     return drink(id, 0)
 
 @app.route('/drink/<int:id>/go')
+@login_required
 def lucky_drink(id):
     return drink(id, 1)
 
@@ -101,5 +105,6 @@ def drink(id, go):
                            can_make=can_make)
 
 @app.route('/drink/sobriety')
+@login_required
 def drink_sobriety():
     return render_template("drink/sobriety")

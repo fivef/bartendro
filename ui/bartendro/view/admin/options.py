@@ -43,6 +43,7 @@ def admin_options():
 
 
 @app.route('/admin/lost-passwd')
+@user_is('admin')
 def admin_lost_passwd():
     if request.remote_addr.startswith("10.0.0"):
         raise Unauthorized

@@ -25,8 +25,7 @@ def login():
 
         if user_object.first():
 
-            if db.session.query(User).filter(User.name == user).first(
-            ).password == password:
+            if user_object.first().check_password(password):
                 # import ipdb; ipdb.set_trace()
                 login_user(user_object.first())
 

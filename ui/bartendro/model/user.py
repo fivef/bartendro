@@ -6,6 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from bartendro.model.drink_name import DrinkName
 from operator import attrgetter
 from flask.ext.permissions.models import UserMixin
+from werkzeug import generate_password_hash, check_password_hash
 
 
 class User(UserMixin):
@@ -34,9 +35,15 @@ class User(UserMixin):
     def __init__(self, name, password, roles=None):
         UserMixin.__init__(self, roles)
         self.name = name
-        self.password = password
+        self.set_password(password)
 
         db.session.add(self)
+        
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     # start flask user functions
     def is_authenticated(self):

@@ -9,9 +9,11 @@ from bartendro.model.booze import Booze
 from bartendro.model.dispenser import Dispenser
 from bartendro.model.drink_booze import DrinkBooze
 from bartendro.model.drink_name import DrinkName
+from flask.ext.permissions.decorators import user_is, user_has
 
 @app.route('/admin/drink')
 @login_required
+@user_is('admin')
 def admin_drink_new():
     drinks = db.session.query(Drink).join(DrinkName).filter(Drink.name_id == DrinkName.id) \
                                  .order_by(asc(func.lower(DrinkName.name))).all()

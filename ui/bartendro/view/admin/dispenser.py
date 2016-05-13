@@ -4,6 +4,7 @@ import memcache
 from bartendro import app, db
 from flask import Flask, request, redirect, render_template
 from flask.ext.login import login_required
+from flask.ext.permissions.decorators import user_is, user_has
 from wtforms import Form, SelectField, IntegerField, validators
 from bartendro.model.drink import Drink
 from bartendro.model.booze import Booze
@@ -16,8 +17,10 @@ from bartendro.mixer import LL_OK
 
 count = 0
 
+
 @app.route('/admin')
 @login_required
+@user_is('admin')
 def dispenser():
     driver = app.driver
     global count
