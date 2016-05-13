@@ -24,7 +24,7 @@
                    <li><a href="/admin/liquidlevel">liquid level</a></li>
                 {% endif %}
                 <li><a href="/admin/debug">debug</a></li>
-                <li><a href="/admin/logout">logout</a></li>
+                <li><a href="/logout">logout</a></li>
             {% endif %}
         </ul>
         <div class="bartendro-logo">

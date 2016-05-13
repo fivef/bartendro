@@ -25,7 +25,7 @@ db = SQLAlchemy(app)
 
 
 login_manager = LoginManager()
-login_manager.login_view = "/admin/login"
+login_manager.login_view = "/login"
 login_manager.setup_app(app)
 
 permissions = Permissions(app, db, current_user)

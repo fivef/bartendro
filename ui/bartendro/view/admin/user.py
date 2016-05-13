@@ -12,7 +12,7 @@ def load_user(userid):
     return db.session.query(User).filter(User.id == userid).first()
 
 
-@app.route("/admin/login", methods=["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -30,19 +30,18 @@ def login():
                 # import ipdb; ipdb.set_trace()
                 login_user(user_object.first())
 
-                return redirect(request.args.get("next") or url_for(
-                    "dispenser"))
-        return render_template("/admin/login",
+                return redirect(request.args.get("next") or "/")
+        return render_template("/login",
                                options=app.options,
                                form=form,
                                fail=1)
-    return render_template("/admin/login",
+    return render_template("/login",
                            options=app.options,
                            form=form,
                            fail=0)
 
 
-@app.route("/admin/logout")
+@app.route("/logout")
 @login_required
 def logout():
     logout_user()

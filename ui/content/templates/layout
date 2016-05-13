@@ -32,6 +32,12 @@
              class="active"
           {% endif %}
           ><a href="/trending" class="slim-nav-item">Trending</a></li>
+          {% if current_user.is_authenticated() %}
+            <li><a href="/trending" class="slim-nav-item">{{ current_user.name }}</a></li>
+            <li><a href="/logout" class="slim-nav-item">Logout</a></li>
+          {% else %}
+            <li><a href="/login" class="slim-nav-item">Login</a></li>
+          {% endif %}
         </ul>
         <div class="bartendro-logo">
             <a href="/admin"><img class="bartendro-logo-img" src="/static/images/bartendro-logo.png"></a>
