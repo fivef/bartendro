@@ -54,7 +54,13 @@ def dispenser():
 
     form = F(**kwargs)
     for i, dispenser in enumerate(dispensers):
-        form["dispenser%d" % (i + 1)].data = "%d" % booze_list[dispenser.booze_id - 1][0]
+
+        #get the booze id as string!!!
+        for booze in booze_list:
+            if booze[0] == dispenser.booze_id:
+                booze_id_string = "%d" % dispenser.booze_id
+
+        form["dispenser%d" % (i + 1)].data = booze_id_string
         form["actual%d" % (i + 1)].data = dispenser.actual
 
     bstate = app.globals.get_state()

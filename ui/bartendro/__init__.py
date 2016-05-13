@@ -50,20 +50,20 @@ from bartendro.model.user import User
 db.create_all()
 db.session.commit()
 
-Drink.name = relationship(DrinkName, backref=backref("drink"))
+Drink.name = relationship(DrinkName, backref=backref("drink"), cascade="save-update, merge, delete")
 
 # TODO: This relationship should really be on Drinkbooze
-Drink.drink_boozes = relationship(DrinkBooze, backref=backref("drink"))
-DrinkBooze.booze = relationship(Booze, backref=backref("drink_booze"))
+Drink.drink_boozes = relationship(DrinkBooze, backref=backref("drink"), cascade="save-update, merge, delete")
+DrinkBooze.booze = relationship(Booze, backref=backref("drink_booze"), cascade="save-update, merge, delete")
 
 # This is the proper relationship from above.
 #DrinkBooze.drink= relationship(Drink, backref=backref("drink_booze"))
 
 Dispenser.booze = relationship(Booze, backref=backref("dispenser"))
-BoozeGroup.abstract_booze = relationship(Booze, backref=backref("booze_group"))
-BoozeGroupBooze.booze_group = relationship(BoozeGroup, backref=backref("booze_group_boozes"))
-BoozeGroupBooze.booze = relationship(Booze, backref=backref("booze_group_booze"))
-CustomDrink.drink = relationship(Drink, backref=backref("custom_drink"))
+BoozeGroup.abstract_booze = relationship(Booze, backref=backref("booze_group"), cascade="save-update, merge, delete")
+BoozeGroupBooze.booze_group = relationship(BoozeGroup, backref=backref("booze_group_boozes"), cascade="save-update, merge, delete")
+BoozeGroupBooze.booze = relationship(Booze, backref=backref("booze_group_booze"), cascade="save-update, merge, delete")
+CustomDrink.drink = relationship(Drink, backref=backref("custom_drink"), cascade="save-update, merge, delete")
 
 DrinkLog.drink = relationship(Drink)
 ShotLog.booze = relationship(Booze)

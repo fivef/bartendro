@@ -17,5 +17,6 @@ class BoozeForm(Form):
     amount = DecimalField(u"Available amount (l)", [validators.NumberRange(0, 100)], default=1, places=4)
     save = SubmitField(u"save")
     cancel = SubmitField(u"cancel")
+    delete = SubmitField(u"delete")
 
 form = BoozeForm()

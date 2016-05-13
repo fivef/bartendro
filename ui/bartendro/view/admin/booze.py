@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from bartendro import app, db
 from sqlalchemy import func, asc
-from flask import Flask, request, redirect, render_template
-from bartendro.model.drink import Drink
+from flask import request, redirect, render_template
 from bartendro.model.booze import Booze
-from bartendro.model.booze_group import BoozeGroup
+from bartendro.model.drink_booze import DrinkBooze
 from bartendro.form.booze import BoozeForm
-from flask.ext.permissions.decorators import user_is, user_has
+from flask.ext.permissions.decorators import user_is
 
 
 @app.route('/admin/booze')
@@ -14,11 +13,16 @@ from flask.ext.permissions.decorators import user_is, user_has
 def admin_booze():
     form = BoozeForm(request.form)
     boozes = Booze.query.order_by(asc(func.lower(Booze.name)))
+
+    deleted = int(request.args.get('deleted', "0"))
+    delete_message = request.args.get('delete_message', "")
     return render_template("admin/booze",
                            options=app.options,
                            boozes=boozes,
                            form=form,
-                           title="Booze")
+                           title="Booze",
+                           deleted=deleted,
+                           delete_message=delete_message)
 
 
 @app.route('/admin/booze/edit/<id>')
@@ -42,14 +46,30 @@ def admin_booze_edit(id):
 def admin_booze_save():
 
     cancel = request.form.get("cancel")
-    if cancel: return redirect('/admin/booze')
+    if cancel:
+        return redirect('/admin/booze')
+
+    delete = request.form.get("delete")
 
     form = BoozeForm(request.form)
     if request.method == 'POST' and form.validate():
         id = int(request.form.get("id") or '0')
         if id:
             booze = Booze.query.filter_by(id=int(id)).first()
-            booze.update(form.data)
+
+            if delete:
+                # check if booze is still used for a drink
+
+                drink_boozes = DrinkBooze.query.filter_by(id=booze.id)
+
+                if drink_boozes.first():
+                    # there are still drinks with this booze
+                    # TODO: show dialog
+                    delete_message = u"Unable to delete the booze {booze}. The drink {drink} still contains {booze}. Delete the drink {drink} first!".format(drink=drink_boozes.first().drink.name.name, booze=booze.name)
+                else:
+                    db.session.delete(booze)
+            else:
+                booze.update(form.data)
         else:
             booze = Booze(data=form.data)
             db.session.add(booze)
@@ -59,11 +79,16 @@ def admin_booze_save():
         mc.delete("top_drinks")
         mc.delete("other_drinks")
         mc.delete("available_drink_list")
-        return redirect('/admin/booze/edit/%d?saved=1' % booze.id)
 
+        if delete:
+            return redirect('/admin/booze?deleted=1&delete_message='+delete_message)
+        else:
+            return redirect('/admin/booze/edit/%d?saved=1' % booze.id)
+
+    # do nothing, just refresh the page
     boozes = Booze.query.order_by(asc(func.lower(Booze.name)))
     return render_template("admin/booze",
                            options=app.options,
                            boozes=boozes,
                            form=form,
-                           title="")
+                           title="Booze")
