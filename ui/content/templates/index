@@ -1,6 +1,12 @@
 {% extends 'layout' %}
 {% set active = "index" %}
 {% block body %}
+<div>
+    <label id="tag_id" name="tag_id">RFID</label>
+    
+</div>
+
+
 <div id="scroll-pane">
     {% if top_drinks or other_drinks %}
         <div class="row-fluid">
@@ -30,6 +36,19 @@
     {% endif %}
 </div>
 <script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+
+<!--
+function update_values() {
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+            $.getJSON($SCRIPT_ROOT+"/_stuff",
+                function(data) {
+                    $("#cpuload").text(data.cpu+" %")
+                    $("#ram").text(data.ram+" %")
+                    $("#disk").text(data.disk+" %")
+                });
+        }
+-->
+
 <script type="text/javascript">
 // defining flags
 var isCtrl = false;
@@ -59,6 +78,22 @@ $(document).ready(function() {
     });
      
 });
+
+
+(function worker() {
+  $.ajax({
+    url: '/rfid', 
+    dataType : "json",
+    success: function(data) {
+      $("#tag_id").text(data.tag_id);
+    },
+    complete: function() {
+      // Schedule the next request when the current one's complete
+      setTimeout(worker, 1000);
+    }
+  });
+})();
+
 </script>
 {% endblock %}
 {% macro drink_table(drinks) -%}

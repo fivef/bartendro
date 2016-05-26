@@ -23,6 +23,7 @@ class User(UserMixin):
     sex = Column(String, default='male')
     bac = Column(String, default=0.0)
     balance = Column(Numeric, default=0.0)
+    rfid = Column(String, default='')
 
     query = db.session.query_property()
 

@@ -4,13 +4,14 @@ import random
 from sqlalchemy import func, asc
 from sqlalchemy.exc import OperationalError
 from bartendro import app, db
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, jsonify
 from flask.ext.login import login_required
 from bartendro.model.dispenser import Dispenser
 from bartendro.model.drink import Drink
 from bartendro.model.drink_name import DrinkName
 from bartendro import fsm
 from bartendro.mixer import LL_LOW, LL_OK
+
 
 def process_ingredients(drinks):
     for drink in drinks:
@@ -128,3 +129,8 @@ def shots():
                            options=app.options, 
                            shots=shots, 
                            title="Shots")
+
+@app.route('/rfid', methods= ['GET'])                       
+def rfid():
+    print("RFID read")
+    return jsonify(tag_id=app.rfid_reader.get_tag())

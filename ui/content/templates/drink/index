@@ -349,7 +349,8 @@ function make_drink(drink, is_taster)
         else 
             args += "&";
         args += "booze" + ing[i].id + "=";
-        volume = is_taster ? ing[i].taster_volume.toFixed(0) : ing[i].volume.toFixed(0);
+        //toFixed converts a number into a string with the argument decimal points
+        volume = is_taster ? ing[i].taster_volume.toFixed(1) : ing[i].volume.toFixed(1);
         args += volume;
     }
     lb = '<div class="lb-box"><h1>';

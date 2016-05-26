@@ -17,7 +17,7 @@ def ws_make_drink(drink_id):
     recipe = {}
     for arg in request.args:
         disp = int(arg[5:])
-        recipe[disp] = int(request.args.get(arg))
+        recipe[disp] = float(request.args.get(arg))
 
     drink = Drink.query.filter_by(id=int(drink_id)).first()
     try:

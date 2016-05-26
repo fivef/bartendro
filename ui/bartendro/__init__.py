@@ -77,14 +77,13 @@ from bartendro.view.ws import booze as ws_booze, dispenser as ws_dispenser, drin
                               misc as ws_misc, liquidlevel, option as ws_options
 
 
-# Create users (only needed once when database is empty)
+# #Create users (only needed once when database is empty)
 # my_admin = User("admin", "admin")
 # my_admin.add_roles('admin')
 # 
 # my_user = User("user", "user")
 # my_user.add_roles('user')
 # db.session.commit()
-
 
 @app.before_request
 def before_request(exception=None):
