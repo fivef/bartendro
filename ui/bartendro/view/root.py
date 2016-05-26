@@ -4,7 +4,7 @@ import random
 from sqlalchemy import func, asc
 from sqlalchemy.exc import OperationalError
 from bartendro import app, db
-from flask import Flask, request, render_template, redirect, jsonify
+from flask import Flask, request, render_template, redirect
 from flask.ext.login import login_required
 from bartendro.model.dispenser import Dispenser
 from bartendro.model.drink import Drink
@@ -30,6 +30,7 @@ def filter_drink_list(can_make_dict, drinks):
 
 @app.route('/')
 def index():
+    print("render index")
     if app.globals.get_state() == fsm.STATE_ERROR:
         return render_template("index", 
                                options=app.options, 
@@ -129,8 +130,3 @@ def shots():
                            options=app.options, 
                            shots=shots, 
                            title="Shots")
-
-@app.route('/rfid', methods= ['GET'])                       
-def rfid():
-    print("RFID read")
-    return jsonify(tag_id=app.rfid_reader.get_tag())
