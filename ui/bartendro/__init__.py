@@ -53,8 +53,8 @@ db.session.commit()
 Drink.name = relationship(DrinkName, backref=backref("drink"), cascade="save-update, merge, delete")
 
 # TODO: This relationship should really be on Drinkbooze
-Drink.drink_boozes = relationship(DrinkBooze, backref=backref("drink"), cascade="save-update, merge, delete")
-DrinkBooze.booze = relationship(Booze, backref=backref("drink_booze"), cascade="save-update, merge, delete")
+Drink.drink_boozes = relationship(DrinkBooze, backref=backref("drink"))
+DrinkBooze.booze = relationship(Booze, backref=backref("drink_booze")) #here cascade on delete is removed because it leads to deleting a booze completely, when a booze is removed from a drink
 
 # This is the proper relationship from above.
 #DrinkBooze.drink= relationship(Drink, backref=backref("drink_booze"))
@@ -65,6 +65,7 @@ BoozeGroupBooze.booze_group = relationship(BoozeGroup, backref=backref("booze_gr
 BoozeGroupBooze.booze = relationship(Booze, backref=backref("booze_group_booze"), cascade="save-update, merge, delete")
 CustomDrink.drink = relationship(Drink, backref=backref("custom_drink"), cascade="save-update, merge, delete")
 
+#TODO add backrefs here
 DrinkLog.drink = relationship(Drink)
 DrinkLog.user = relationship(User)
 ShotLog.booze = relationship(Booze)

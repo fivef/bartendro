@@ -60,13 +60,13 @@ def admin_booze_save():
             if delete:
                 # check if booze is still used for a drink
 
-                drink_boozes = DrinkBooze.query.filter_by(id=booze.id)
+                drink_boozes = DrinkBooze.query.filter_by(booze_id=booze.id)
 
                 if drink_boozes.first():
                     # there are still drinks with this booze
-                    # TODO: show dialog
-                    delete_message = u"Unable to delete the booze {booze}. The drink {drink} still contains {booze}. Delete the drink {drink} first!".format(drink=drink_boozes.first().drink.name.name, booze=booze.name)
+                    delete_message = u"Unable to delete the booze {booze}. The drink {drink} still contains {booze}. Delete the drink {drink} first!".format(drink=drink_boozes.first().drink.name.name, booze=booze.name, booze_id=booze.id)
                 else:
+                    delete_message = u"The booze {booze} has been deleted successfully.".format(booze=booze.name)
                     db.session.delete(booze)
             else:
                 booze.update(form.data)
