@@ -19,10 +19,12 @@ except ImportError:
 
 #change this if you want to add more gpios / dispensers / valves / pumps
 #add all gpios here which are connected to a pump/valve, they will be numerated in the order of appearance
-GPIOOutputs =  [2, 3, 4, 17, 27, 22, 18, 23, 24, 25, 8, 7]
+GPIOOutputs =  [2, 3, 4, 17, 27, 22, 18, 23, 24, 25, 8]
+
+STIRRER_GPIO_PIN = 7
 
 #with this list specific output pins can be inverted. 0 means normally LOW, 1 means normally HIGH
-INVERTED_PINS = [1, 1, 1, 1,  1,  1,  1,  1,  0,  0,  0, 1]
+INVERTED_PINS = [1, 1, 1, 1,  1,  1,  1,  1,  0,  0,  0]
 
 MOTOR_DIRECTION_FORWARD       = 1
 MOTOR_DIRECTION_BACKWARD      = 0
@@ -31,7 +33,7 @@ log = logging.getLogger('bartendro')
 
 class Dispenser():
     
-    def __init__(self, gpio, inverted):
+    def __init__(self, gpio, inverted=0):
         self.gpio = gpio
         self.inverted = inverted
         self.dispensing = False
@@ -76,6 +78,7 @@ class RouterDriver(object):
         log.info("Starting Driver.\n")
 
         self.dispensers = []
+        self.stirrer = Dispenser(STIRRER_GPIO_PIN, 1)
         #add dispensers
         for index, gpio in enumerate(GPIOOutputs):
             self.dispensers.append(Dispenser(gpio, INVERTED_PINS[index]))
@@ -106,14 +109,15 @@ class RouterDriver(object):
 
         # use GPIO pin numbering convention (not the actual pin numbers)
         GPIO.setmode(GPIO.BCM)
-        
+
         #define all gpios given in gpiooutputs as outputs
-        for dispenser in self.dispensers:
+        for dispenser in self.dispensers + [self.stirrer, ]:
             GPIO.setup(dispenser.get_gpio_number(), GPIO.OUT)
             if dispenser.inverted:
                 GPIO.output(dispenser.get_gpio_number(), GPIO.HIGH)
             else:
                 GPIO.output(dispenser.get_gpio_number(), GPIO.LOW)
+                
         self._clear_startup_log()
 
     def close(self):    
@@ -131,6 +135,12 @@ class RouterDriver(object):
         log.info("Start dispensing on dispenser " + str(dispenser) + " for " + str(duration) + " seconds.\n")
              
         self.dispensers[dispenser].pour_for_duration(duration)
+        return True
+        
+    def stir_for_duration(self, duration):
+        log.info("Start stirring for " + str(duration) + " seconds.\n")
+     
+        self.stirrer.pour_for_duration(duration)
         return True
 
     def ping(self, dispenser):
