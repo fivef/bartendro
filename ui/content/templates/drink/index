@@ -132,8 +132,7 @@
       Bartendro has encountered an error making this drink. Sorry!
   </p>
 </div>
-<script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
+
 <script type="text/javascript">
 
 var taster_size = {{ options.taster_size }};

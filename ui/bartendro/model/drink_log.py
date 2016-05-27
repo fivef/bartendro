@@ -14,15 +14,17 @@ class DrinkLog(db.Model):
     drink_id = Column(Integer, ForeignKey('drink.id'), nullable=False)
     time = Column(Integer, nullable=False, default=0)
     size = Column(Integer, nullable=False, default=-1)
+    user_id = Column(Integer, ForeignKey('fp_user.id'))
  
     query = db.session.query_property()
 
-    def __init__(self, drink_id, time, size):
+    def __init__(self, drink_id, time, size, user_id):
         self.drink_id = drink_id
         self.time = time
         self.size = size
+        self.user_id = user_id
         db.session.add(self)
 
     def __repr__(self):
-        return "<DrinkLog(%d,'%s')>" % (self.id, self.drink_id)
+        return "<DrinkLog(%d,'%s','%s')>" % (self.id, self.drink_id, self.user_id)
 

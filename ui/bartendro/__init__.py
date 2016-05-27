@@ -66,6 +66,7 @@ BoozeGroupBooze.booze = relationship(Booze, backref=backref("booze_group_booze")
 CustomDrink.drink = relationship(Drink, backref=backref("custom_drink"), cascade="save-update, merge, delete")
 
 DrinkLog.drink = relationship(Drink)
+DrinkLog.user = relationship(User)
 ShotLog.booze = relationship(Booze)
 
 # Import views

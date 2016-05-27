@@ -7,6 +7,7 @@ from decimal import *
 from threading import Thread
 from flask import Flask, current_app
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.login import current_user
 import memcache
 from sqlalchemy.orm import mapper, relationship, backref
 from bartendro import db, app
@@ -98,7 +99,7 @@ class Mixer(object):
                 for k in recipe.keys():
                     size += recipe[k] 
                 t = int(time())
-                dlog = DrinkLog(drink.id, t, size)
+                dlog = DrinkLog(drink.id, t, size, current_user.id)
                 db.session.add(dlog)
                 db.session.commit()
 
