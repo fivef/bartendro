@@ -3,7 +3,7 @@ import time
 from bartendro import app, db
 from sqlalchemy import desc
 from flask import Flask, request, render_template
-from flask.ext.login import login_required
+from flask.ext.login import login_required, current_user
 from bartendro.model.drink import Drink
 from bartendro.model.drink_log import DrinkLog
 from bartendro.model.booze import Booze
@@ -62,6 +62,11 @@ def trending_drinks_detail(hours):
                                        AND drink_log.time <= :end""")\
                  .params(begin=begindate, end=enddate).first()
 
+    try:
+        user_id_sql_string = """AND drink_log.user_id = """ + str(current_user.id)
+    except AttributeError:
+        #no user is logged in, show overview
+        user_id_sql_string = ""
     top_drinks = db.session.query("id", "name", "number", "volume")\
                  .from_statement("""SELECT drink.id, 
                                            drink_name.name,
@@ -70,10 +75,14 @@ def trending_drinks_detail(hours):
                                       FROM drink_log, drink_name, drink 
                                      WHERE drink_log.drink_id = drink_name.id 
                                        AND drink_name.id = drink.id
+                                       """ + str(user_id_sql_string) + """
                                        AND drink_log.time >= :begin AND drink_log.time <= :end 
                                   GROUP BY drink_name.name 
                                   ORDER BY count(drink_log.drink_id) desc;""")\
                  .params(begin=begindate, end=enddate).all()
+
+
+
 
     return render_template("trending", top_drinks = top_drinks, options=app.options,
                                        title="Trending drinks",
