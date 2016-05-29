@@ -276,15 +276,15 @@ class Mixer(object):
                     found = True
                     ml = self.recipe.data[booze_id]
                     if ml <= 0:
-                        log_lines[i] = "  %-2d %-32s %d ml (not dispensed)" % (i, "%s (%d)" % (disp.booze.name, disp.booze.id), ml)
+                        log_lines[i] = "  %-2d %-32s %.2f ml (not dispensed)" % (i, "%s (%d)" % (disp.booze.name, disp.booze.id), ml)
                         continue
 
                     if ml > MAX_DISPENSE:
-                        raise BartendroCantPourError("Cannot make drink. Invalid dispense quantity: %d ml. (Max %d ml)" % (ml, MAX_DISPENSE))
+                        raise BartendroCantPourError("Cannot make drink. Invalid dispense quantity: %.2f ml. (Max %.2f ml)" % (ml, MAX_DISPENSE))
 
                     recipe[i] =  ml
                     size += ml
-                    log_lines[i] = "  %-2d %-32s %d ml" % (i, "%s (%d)" % (disp.booze.name, disp.booze.id), ml)
+                    log_lines[i] = "  %-2d %-32s %.2f ml" % (i, "%s (%d)" % (disp.booze.name, disp.booze.id), ml)
                     self.driver.set_motor_direction(i, MOTOR_DIRECTION_FORWARD)
                     continue
 
