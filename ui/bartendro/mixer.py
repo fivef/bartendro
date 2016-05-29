@@ -20,6 +20,7 @@ from bartendro.model.booze import Booze
 from bartendro.model.option import Option
 from bartendro.model.dispenser import Dispenser
 from bartendro.model.drink_log import DrinkLog
+from bartendro.model.drink_log_booze import DrinkLogBooze
 from bartendro.model.shot_log import ShotLog
 from bartendro.global_lock import BartendroLock
 from bartendro.error import BartendroBusyError, BartendroBrokenError, BartendroCantPourError, BartendroCurrentSenseError
@@ -101,6 +102,17 @@ class Mixer(object):
                 t = int(time())
                 dlog = DrinkLog(drink.id, t, size, current_user.id)
                 db.session.add(dlog)
+                db.session.commit()
+                
+                for booze_id in recipe.keys():
+                    amount = recipe[booze_id]
+                    
+                    #get booze by id
+                    booze = db.session.query(Booze).filter(Booze.id == booze_id).first()
+                    
+                    dlog_booze = DrinkLogBooze(dlog, booze, amount)
+                    db.session.add(dlog_booze)
+                
                 db.session.commit()
 
     def do_event(self, event):
