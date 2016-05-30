@@ -36,6 +36,12 @@
                {% else %}
                    {{ "%.2f" | format((total_volume / 1000) / 3.78|float) }} gallons 
                {% endif %}
+               <br>
+               Total volume of pure alcohol: {{total_volume_of_pure_alcohol}} ml.
+               <br>
+               Beer equivalent: {{beer_equivalent}} in beer (size 0.33l with 5.1% alcohol)
+               <br>
+               BAC: {{bac}} 1/1000 (Uses Watson-Formula to calculate the total amount of water in the body and Widmark-Formula for a theoretical maximum BAC see <a href="http://www.wsp.wa.gov/breathtest/docs/webdms/Studies_Articles/Widmarks%20Equation%2009-16-1996.pdf">paper</a>).
            </div>
         </div>
         <table class="table table-striped table-bordered">
