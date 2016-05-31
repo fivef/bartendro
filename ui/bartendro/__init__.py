@@ -92,6 +92,9 @@ from bartendro.view.ws import booze as ws_booze, dispenser as ws_dispenser, drin
 # my_user2 = User("user2", "user2")
 # my_user2.add_roles('user')
 # db.session.commit()
+# my_user3 = User("machine", "machine1337")
+# my_user3.add_roles('machine')
+# db.session.commit()
 
 @app.before_request
 def before_request(exception=None):
