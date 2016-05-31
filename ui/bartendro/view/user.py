@@ -61,7 +61,6 @@ def rfid():
         login_user(user_object.first())
         print("User {} logged in".format(user_object.first().name))
         
-        # TODO: redirect and calling index doesnt work to update the index page
         return jsonify(tag_id=tag_id)
          #redirect(request.args.get("/shots"))
     return jsonify(tag_id=tag_id)

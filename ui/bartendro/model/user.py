@@ -34,7 +34,7 @@ class User(UserMixin):
     }
 
     def __init__(self, name, password, roles=None):
-        super().__init__(self, roles)
+        UserMixin.__init__(self, roles)
         self.name = name
         self.set_password(password)
 

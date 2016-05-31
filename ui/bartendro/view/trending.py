@@ -66,7 +66,7 @@ def trending_drinks_detail(hours):
 
     total_volume_of_pure_alcohol = calculate_total_volume_of_pure_alcohol(begindate, enddate)
     
-    beer_equivalent = calculate_beer_equivalent(total_volume_of_pure_alcohol)
+    beer_equivalent = "{0:.2f}".format(calculate_beer_equivalent(total_volume_of_pure_alcohol))
                 
     bac = "{0:.2f}".format(calculate_bac(total_volume_of_pure_alcohol))
             
@@ -105,14 +105,24 @@ def trending_drinks_detail(hours):
                                        
 def calculate_total_volume_of_pure_alcohol(begindate, enddate):
     # calculate the total amount of pure alcohol drunk during the selected period
-    drink_log_booze_of_current_user_with_alcohol = db.session.query(DrinkLog, DrinkLogBooze, Booze)\
-        .filter(DrinkLog.id==DrinkLogBooze.drink_log_id)\
-        .filter(DrinkLog.user_id==current_user.id)\
-        .filter(DrinkLogBooze.booze_id==Booze.id)\
-        .filter(Booze.type==1)\
-        .filter(DrinkLog.time>=begindate)\
-        .filter(DrinkLog.time<=enddate).all()
-
+    
+    try:
+        drink_log_booze_of_current_user_with_alcohol = db.session.query(DrinkLog, DrinkLogBooze, Booze)\
+            .filter(DrinkLog.id==DrinkLogBooze.drink_log_id)\
+            .filter(DrinkLog.user_id==current_user.id)\
+            .filter(DrinkLogBooze.booze_id==Booze.id)\
+            .filter(Booze.type==1)\
+            .filter(DrinkLog.time>=begindate)\
+            .filter(DrinkLog.time<=enddate).all()
+    except AttributeError as e:
+        # no user is logged in, take all drinks in drink log
+        drink_log_booze_of_current_user_with_alcohol = db.session.query(DrinkLog, DrinkLogBooze, Booze)\
+            .filter(DrinkLog.id==DrinkLogBooze.drink_log_id)\
+            .filter(DrinkLogBooze.booze_id==Booze.id)\
+            .filter(Booze.type==1)\
+            .filter(DrinkLog.time>=begindate)\
+            .filter(DrinkLog.time<=enddate).all()
+    
     total_volume_of_pure_alcohol = 0.0
     for drink_log_booze in drink_log_booze_of_current_user_with_alcohol:
         amount = drink_log_booze.DrinkLogBooze.amount
@@ -131,7 +141,11 @@ def calculate_bac(pure_alcohol):
     
     gkw = 0
     
-    user = db.session.query(User).filter(User.id==current_user.id).one()
+    try:
+        user = db.session.query(User).filter(User.id==current_user.id).one()
+    except AttributeError as e:
+        "No user logged in, bac can't be calculated."
+        return 0
     
     if user.sex == "male":
         gkw = 2.447 - 0.09516*float(user.age)+0.1074*float(user.height)+0.3362*float(user.weight)
