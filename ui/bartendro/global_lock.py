@@ -34,7 +34,9 @@ class BartendroGlobalLock(object):
            Bartendro."""
 
         # If we're not running inside uwsgi, then don't try to use the lock
-        if not have_uwsgi: return True
+        if not have_uwsgi: 
+            print("Not running inside uwsgi, unable to use global lock!!!")
+            return True
 
         uwsgi.lock()
         is_locked = uwsgi.sharedarea_readbyte(0)
