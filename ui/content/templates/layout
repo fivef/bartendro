@@ -76,11 +76,9 @@
     </div>
       <div class="container-fluid">
         <div id="moar">
-                <div class="orange-border">
-                    <div class="dark-border">
-                       {% block body %}{% endblock %}
-                    </div>
-                </div>
+              <div class="dark-border">
+                 {% block body %}{% endblock %}
+              </div>
           </div>
       </div>
   </body>
