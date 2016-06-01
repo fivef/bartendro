@@ -40,8 +40,8 @@
             <span class="help-block">
                If you're a calibration ninja, like the Partyrobotics team, you can calibrate all the sensors in one go:
             </span>
-            <a class="btn btn-large btn-warning" style="margin-left: 30px" onclick="save_all_thresholds(1)">save all liquid low thresholds</a>
-            <a class="btn btn-large btn-warning" style="margin-left: 30px" onclick="save_all_thresholds(0)">save all liquid out thresholds</a>
+            <a class="btn btn-large btn-inverse" style="margin-left: 30px" onclick="save_all_thresholds(1)">save all liquid low thresholds</a>
+            <a class="btn btn-large btn-inverse" style="margin-left: 30px" onclick="save_all_thresholds(0)">save all liquid out thresholds</a>
         </div>
   </div>
 </div>

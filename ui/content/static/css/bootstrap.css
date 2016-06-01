@@ -2169,7 +2169,7 @@ input[type="button"].btn-block {
   width: 100%;
 }
 .btn-primary.active,
-.btn-warning.active,
+.btn-inverse.active,
 .btn-danger.active,
 .btn-success.active,
 .btn-info.active,
@@ -2208,7 +2208,7 @@ input[type="button"].btn-block {
 .btn-primary.active {
   background-color: #003399 \9;
 }
-.btn-warning {
+.btn-inverse {
   color: #ffffff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   background-color: #fb8946;
@@ -2226,18 +2226,18 @@ input[type="button"].btn-block {
 
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
-.btn-warning:hover,
-.btn-warning:focus,
-.btn-warning:active,
-.btn-warning.active,
-.btn-warning.disabled,
-.btn-warning[disabled] {
+.btn-inverse:hover,
+.btn-inverse:focus,
+.btn-inverse:active,
+.btn-inverse.active,
+.btn-inverse.disabled,
+.btn-inverse[disabled] {
   color: #ffffff;
   background-color: #fa6c19;
   *background-color: #f45d05;
 }
-.btn-warning:active,
-.btn-warning.active {
+.btn-inverse:active,
+.btn-inverse.active {
   background-color: #db5405 \9;
 }
 .btn-danger {
@@ -3011,7 +3011,7 @@ input[type="submit"].btn.btn-mini {
 .btn-group.open .btn-primary.dropdown-toggle {
   background-color: #0044cc;
 }
-.btn-group.open .btn-warning.dropdown-toggle {
+.btn-group.open .btn-inverse.dropdown-toggle {
   background-color: #fa6c19;
 }
 .btn-group.open .btn-danger.dropdown-toggle {
@@ -3046,7 +3046,7 @@ input[type="submit"].btn.btn-mini {
   border-bottom-width: 5px;
 }
 .btn-primary .caret,
-.btn-warning .caret,
+.btn-inverse .caret,
 .btn-danger .caret,
 .btn-info .caret,
 .btn-success .caret,
