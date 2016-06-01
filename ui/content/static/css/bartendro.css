@@ -324,18 +324,18 @@ table {
 }
 
 .dispense-buttons-left {
-    width: 30%;
+    width: 10%;
 }
 
 .dispense-buttons-middle {
+    font-weight: bold;
     text-align: center;
-    width: 30%;
+    width: 20%;
 }
 
 .dispense-buttons-right {
-    font-weight: bold;
     text-align: right;
-    width: 30%;
+    width: 10%;
 }
 
 .dispenser-out {

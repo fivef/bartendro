@@ -58,6 +58,16 @@ def drink(id, go):
 
     show_sweet_tart = has_sweet and has_tart
     show_strength = has_alcohol and has_non_alcohol
+    
+    """ only allow to pour drinks if
+    the ip of the request is in allowed ips list set in options """
+    remote_addr=request.remote_addr
+    allowed_ip_addresses = app.options.ips_allowed_to_pour_drinks.split(",")
+    
+    if remote_addr in allowed_ip_addresses:
+        allowed_to_pour = True
+    else:
+        allowed_to_pour = False
 
     if not custom_drink:
         return render_template("drink/index", 
@@ -69,7 +79,8 @@ def drink(id, go):
                                show_sobriety=show_sobriety,
                                can_change_strength=show_strength,
                                go=go,
-                               can_make=can_make)
+                               can_make=can_make, 
+                               allowed_to_pour=allowed_to_pour)
 
     dispensers = db.session.query(Dispenser).all()
     disp_boozes = {}
@@ -102,7 +113,8 @@ def drink(id, go):
                            show_sobriety=show_sobriety,
                            can_change_strength=show_strength,
                            go=go,
-                           can_make=can_make)
+                           can_make=can_make,
+                           allowed_to_pour=allowed_to_pour)
 
 @app.route('/drink/sobriety')
 @login_required

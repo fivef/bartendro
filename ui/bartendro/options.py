@@ -25,7 +25,8 @@ bartendro_options = {
     u'use_shotbot_ui'          : False,
     u'show_feeling_lucky'      : False,
     u'default_flowrate'        : 10.0,
-    u'stir_duration'           : 5.0
+    u'stir_duration'           : 5.0,
+    u'ips_allowed_to_pour_drinks' : u"192.168.0.13"
 }
 
 class BadConfigOptionsError(Exception):
