@@ -59,6 +59,12 @@
                              Require a valid user login to dispense drinks
                         </label>
                     </div>
+                    <div>
+                        <label for="option-ips_allowed_to_pour_drinks">IP addresses which are allowed to pour drinks seperated by commas.</label>
+                        <input id="option-ips_allowed_to_pour_drinks" name="option-ips_allowed_to_pour_drinks" type="text"></input>
+                    </div>
+                    
+                    
                 </div>
                 <div class="div-spacer"></div>
                 <h4>Size options</h4>
@@ -130,7 +136,7 @@
             </fieldset>
         </form>
         <div class="div-spacer">
-            <a class="btn btn-large btn-primary submit-button" onclick="save()">save and reboot</a>
+            <a class="btn btn-large btn-primary submit-button" onclick="save()">save</a>
         </div>
     </div>
     <div class="span4 admin-box-full">
@@ -332,6 +338,7 @@ function set_options(opts)
     $('#option-test-dispense-size').val(opts['test_dispense_ml']);
     $('#option-default-flowrate').val(opts['default_flowrate']);
     $('#option-default-stir_duration').val(opts['stir_duration']);
+    $('#option-ips_allowed_to_pour_drinks').val(opts['ips_allowed_to_pour_drinks']);
 
     if (opts['show_taster'])
         $('#option-show-taster').prop("checked", true);
@@ -371,6 +378,7 @@ function save()
     options['strength_steps'] = $("#option-strength-steps").val();
     options['default_flowrate'] = $("#option-default-flowrate").val();
     options['stir_duration'] = $("#option-default-stir_duration").val();
+    options['ips_allowed_to_pour_drinks'] = $("#option-ips_allowed_to_pour_drinks").val();
 
     j = {}
     j['options'] = options;
