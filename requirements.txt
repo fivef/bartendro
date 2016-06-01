@@ -11,3 +11,4 @@ itsdangerous==0.24
 pyserial==2.7
 python-memcached==1.53
 wsgiref==0.1.2
+uwsgi==2.0.13.1
