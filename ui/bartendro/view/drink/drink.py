@@ -63,12 +63,13 @@ def drink(id, go):
     the ip of the request is in allowed ips list set in options """
     remote_addr=request.remote_addr
     allowed_ip_addresses = app.options.ips_allowed_to_pour_drinks.split(", ")
-    #@fivef: there is a blank between the ips in db! 
+    #@fivef: there is a blank between the ips in db!
 
     if unicode(remote_addr) in allowed_ip_addresses:
         allowed_to_pour = True
     else:
         allowed_to_pour = False
+        print "not allowed to pour. Ip: ".remote_addr." not in ".allowed_ip_addresses
 
     if not custom_drink:
         return render_template("drink/index",
