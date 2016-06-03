@@ -503,8 +503,9 @@ class Mixer(object):
     def _dispense_recipe(self, recipe):
 
         active_disp = []
+        max_duration = 1 #value to determine the dispenser with the longes run time = total time for the recipe to finish
+        total_disp = 0 #sadly has to be recomputed as recipe does not contain this value
 
-        max_duration = 1
 
         for disp in recipe:
             if not recipe[disp]:
@@ -539,17 +540,23 @@ class Mixer(object):
 
             active_disp.append(disp)
 
+            #add dispensed amount to total_disp
+            total_disp += recipe[disp]
+
         stirr_duration = Decimal(Option.query.filter_by(key="stir_duration").first().value)
 
-        #sleep until last dispenser has finished
-        # -1 to prevent that people take out their glass before stirring starts
-        sleep(max_duration-1)
+        # only stirr if there is enough liquid dispensed -> TODO:value should be set backend / database
+        if total_disp > 100:
 
-        if not self.driver.stir_for_duration(stirr_duration):
-            raise BartendroBrokenError("Stirring failed.")
+            #sleep until last dispenser has finished
+            # max_duration-1 to prevent that people take out their glass before stirring starts
+            sleep(max_duration-1)
 
-        #TODO check if stirring has finished
-        #active_disp.append(stir_dispenser)
+            if not self.driver.stir_for_duration(stirr_duration):
+                raise BartendroBrokenError("Stirring failed.")
+
+            #TODO check if stirring has finished
+            #active_disp.append(stir_dispenser)
 
         for disp in active_disp:
             while True:
