@@ -504,7 +504,7 @@ class Mixer(object):
 
         active_disp = []
 
-        max_duration = 0
+        max_duration = 1
 
         for disp in recipe:
             if not recipe[disp]:
@@ -528,6 +528,7 @@ class Mixer(object):
 
             duration = Decimal(recipe[disp]) / flowrate
 
+            #find dispenser with the longes duration
             if duration > max_duration:
                 max_duration = duration
 
@@ -540,8 +541,9 @@ class Mixer(object):
 
         stirr_duration = Decimal(Option.query.filter_by(key="stir_duration").first().value)
 
-        import time
-        time.sleep(max_duration)
+        #sleep until last dispenser has finished
+        # -1 to prevent that people take out their glass before stirring starts
+        sleep(max_duration-1)
 
         if not self.driver.stir_for_duration(stirr_duration):
             raise BartendroBrokenError("Stirring failed.")
