@@ -69,7 +69,7 @@ def drink(id, go):
         allowed_to_pour = True
     else:
         allowed_to_pour = False
-        print "not allowed to pour. Ip: "+remote_addr+" not in "+allowed_ip_addresses
+        print "not allowed to pour. Ip: "+str(remote_addr)+" not in "+str(allowed_ip_addresses)
 
     if not custom_drink:
         return render_template("drink/index",
