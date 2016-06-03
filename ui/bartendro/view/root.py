@@ -5,11 +5,13 @@ from sqlalchemy import func, asc
 from sqlalchemy.exc import OperationalError
 from bartendro import app, db
 from flask import Flask, request, render_template, redirect
+from flask.ext.login import login_required
 from bartendro.model.dispenser import Dispenser
 from bartendro.model.drink import Drink
 from bartendro.model.drink_name import DrinkName
 from bartendro import fsm
 from bartendro.mixer import LL_LOW, LL_OK
+
 
 def process_ingredients(drinks):
     for drink in drinks:
@@ -24,9 +26,11 @@ def filter_drink_list(can_make_dict, drinks):
         except KeyError:
             pass
     return filtered
+    
 
 @app.route('/')
 def index():
+    print("render index")
     if app.globals.get_state() == fsm.STATE_ERROR:
         return render_template("index", 
                                options=app.options, 
@@ -93,6 +97,7 @@ def index():
                            title="Bartendro")
 
 @app.route('/shots')
+@login_required
 def shots():
 
     if not app.options.use_shotbot_ui:

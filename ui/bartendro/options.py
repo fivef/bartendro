@@ -8,6 +8,8 @@ import types
 
 log = logging.getLogger('bartendro')
 
+
+#do these values still have any effect? all data seem to be in db so far...
 bartendro_options = {
     u'use_liquid_level_sensors': False,
     u'must_login_to_dispense'  : False,
@@ -24,7 +26,9 @@ bartendro_options = {
     u'strength_steps'          : 2,
     u'use_shotbot_ui'          : False,
     u'show_feeling_lucky'      : False,
-    u'default_flowrate'        : 10.0
+    u'default_flowrate'        : 10.0,
+    u'stir_duration'           : 5.0,
+    u'ips_allowed_to_pour_drinks' : u"0.0.0.0"
 }
 
 class BadConfigOptionsError(Exception):

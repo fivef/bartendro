@@ -1,12 +1,16 @@
 Flask==0.10.1
 Flask-Login==0.2.11
+Flask-Permissions==0.2.3
 Flask-SQLAlchemy==1.0
 Jinja2==2.7.3
 MarkupSafe==0.23
 SQLAlchemy==0.9.4
 WTForms==2.0
 Werkzeug==0.9.6
+argparse==1.2.1
+evdev==0.6.0
 itsdangerous==0.24
 pyserial==2.7
 python-memcached==1.53
+uWSGI==2.0.13.1
 wsgiref==0.1.2

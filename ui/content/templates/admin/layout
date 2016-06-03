@@ -20,11 +20,12 @@
                 {% endif %}
                 <li><a href="/admin/booze">booze</a></li>
                 <li><a href="/admin/options">options</a></li>
+                <li><a href="/admin/report">report</a></li>
                 {% if options.use_liquid_level_sensors %}
                    <li><a href="/admin/liquidlevel">liquid level</a></li>
                 {% endif %}
                 <li><a href="/admin/debug">debug</a></li>
-                <li><a href="/admin/logout">logout</a></li>
+                <li><a href="/logout">logout</a></li>
             {% endif %}
         </ul>
         <div class="bartendro-logo">

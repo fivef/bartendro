@@ -1,6 +1,7 @@
 {% extends 'layout' %}
 {% set active = "index" %}
 {% block body %}
+
 <div id="scroll-pane">
     {% if top_drinks or other_drinks %}
         <div class="row-fluid">
@@ -29,7 +30,7 @@
         </div>
     {% endif %}
 </div>
-<script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+
 <script type="text/javascript">
 // defining flags
 var isCtrl = false;
@@ -59,6 +60,8 @@ $(document).ready(function() {
     });
      
 });
+
+
 </script>
 {% endblock %}
 {% macro drink_table(drinks) -%}

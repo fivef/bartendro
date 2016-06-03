@@ -59,6 +59,12 @@
                              Require a valid user login to dispense drinks
                         </label>
                     </div>
+                    <div>
+                        <label for="option-ips_allowed_to_pour_drinks">IP addresses which are allowed to pour drinks seperated by commas.</label>
+                        <input id="option-ips_allowed_to_pour_drinks" name="option-ips_allowed_to_pour_drinks" type="text"></input>
+                    </div>
+                    
+                    
                 </div>
                 <div class="div-spacer"></div>
                 <h4>Size options</h4>
@@ -97,6 +103,10 @@
                     <h4>Drink options</h4>
                     <div style="margin-left: 15px">
                         <div>
+                            <label for="option-default-stir_duration">Default time in seconds a drink is stirred.</label>
+                            <input id="option-default-stir_duration" name="option-default-stir_duration" type="text"></input>
+                        </div>
+                        <div>
                             <label for="option-show-taster" class="checkbox">
                                 <input id="option-show-taster" name="option-show-taster" type="checkbox"></input>
                                 Show taster button
@@ -126,7 +136,7 @@
             </fieldset>
         </form>
         <div class="div-spacer">
-            <a class="btn btn-large btn-primary submit-button" onclick="save()">save and reboot</a>
+            <a class="btn btn-large btn-primary submit-button" onclick="save()">save</a>
         </div>
     </div>
     <div class="span4 admin-box-full">
@@ -194,8 +204,7 @@
 </div>
 <div id="manual-reload-dialog" title="Bartendro" style="display: none; text-align: center;">
   <p>
-    The options have been saved. In order for these options to take effect, please 
-    restart Bartendro.
+    The options have been saved.
   </p>
 </div>
 <script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
@@ -251,6 +260,13 @@ $(document).ready(function()
                 digits : true
             },
             'option-default-flowrate' : {
+                required: true,
+                minlength: 1,
+                maxlength: 10,
+                max: 1000,
+                number: true
+            },
+            'option-default-stir_duration' : {
                 required: true,
                 minlength: 1,
                 maxlength: 10,
@@ -321,8 +337,8 @@ function set_options(opts)
     $('#option-taster-size').val(opts['taster_size']);
     $('#option-test-dispense-size').val(opts['test_dispense_ml']);
     $('#option-default-flowrate').val(opts['default_flowrate']);
-    
-    
+    $('#option-default-stir_duration').val(opts['stir_duration']);
+    $('#option-ips_allowed_to_pour_drinks').val(opts['ips_allowed_to_pour_drinks']);
 
     if (opts['show_taster'])
         $('#option-show-taster').prop("checked", true);
@@ -361,6 +377,8 @@ function save()
     options['show_strength'] = $("#option-show-strength").prop("checked") ? 1 : 0;
     options['strength_steps'] = $("#option-strength-steps").val();
     options['default_flowrate'] = $("#option-default-flowrate").val();
+    options['stir_duration'] = $("#option-default-stir_duration").val();
+    options['ips_allowed_to_pour_drinks'] = $("#option-ips_allowed_to_pour_drinks").val();
 
     j = {}
     j['options'] = options;

@@ -7,6 +7,7 @@ from decimal import *
 from threading import Thread
 from flask import Flask, current_app
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.login import current_user
 import memcache
 from sqlalchemy.orm import mapper, relationship, backref
 from bartendro import db, app
@@ -19,6 +20,7 @@ from bartendro.model.booze import Booze
 from bartendro.model.option import Option
 from bartendro.model.dispenser import Dispenser
 from bartendro.model.drink_log import DrinkLog
+from bartendro.model.drink_log_booze import DrinkLogBooze
 from bartendro.model.shot_log import ShotLog
 from bartendro.global_lock import BartendroLock
 from bartendro.error import BartendroBusyError, BartendroBrokenError, BartendroCantPourError, BartendroCurrentSenseError
@@ -98,8 +100,19 @@ class Mixer(object):
                 for k in recipe.keys():
                     size += recipe[k] 
                 t = int(time())
-                dlog = DrinkLog(drink.id, t, size)
+                dlog = DrinkLog(drink.id, t, size, current_user.id)
                 db.session.add(dlog)
+                db.session.commit()
+                
+                for booze_id in recipe.keys():
+                    amount = recipe[booze_id]
+                    
+                    #get booze by id
+                    booze = db.session.query(Booze).filter(Booze.id == booze_id).first()
+                    
+                    dlog_booze = DrinkLogBooze(dlog, booze, amount)
+                    db.session.add(dlog_booze)
+                
                 db.session.commit()
 
     def do_event(self, event):
@@ -275,15 +288,15 @@ class Mixer(object):
                     found = True
                     ml = self.recipe.data[booze_id]
                     if ml <= 0:
-                        log_lines[i] = "  %-2d %-32s %d ml (not dispensed)" % (i, "%s (%d)" % (disp.booze.name, disp.booze.id), ml)
+                        log_lines[i] = "  %-2d %-32s %.2f ml (not dispensed)" % (i, "%s (%d)" % (disp.booze.name, disp.booze.id), ml)
                         continue
 
                     if ml > MAX_DISPENSE:
-                        raise BartendroCantPourError("Cannot make drink. Invalid dispense quantity: %d ml. (Max %d ml)" % (ml, MAX_DISPENSE))
+                        raise BartendroCantPourError("Cannot make drink. Invalid dispense quantity: %.2f ml. (Max %.2f ml)" % (ml, MAX_DISPENSE))
 
                     recipe[i] =  ml
                     size += ml
-                    log_lines[i] = "  %-2d %-32s %d ml" % (i, "%s (%d)" % (disp.booze.name, disp.booze.id), ml)
+                    log_lines[i] = "  %-2d %-32s %.2f ml" % (i, "%s (%d)" % (disp.booze.name, disp.booze.id), ml)
                     self.driver.set_motor_direction(i, MOTOR_DIRECTION_FORWARD)
                     continue
 
@@ -519,7 +532,13 @@ class Mixer(object):
                 raise BartendroBrokenError("Dispense error. Dispense %d ml in duration %d s on dispenser %d failed." % (recipe[disp], duration, disp + 1))
 
             active_disp.append(disp)
-            sleep(.01)
+
+        duration = Decimal(Option.query.filter_by(key="stir_duration").first().value)
+        if not self.driver.stir_for_duration(duration):
+            raise BartendroBrokenError("Stirring failed.")
+
+        #TODO check if stirring has finished
+        #active_disp.append(stir_dispenser)
 
         for disp in active_disp:
             while True:
@@ -539,6 +558,7 @@ class Mixer(object):
                     break 
 
                 sleep(.1)
+
 
     def _can_make_drink(self, boozes, booze_dict):
         ok = True

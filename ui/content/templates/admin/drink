@@ -314,7 +314,7 @@ function taster()
 
     for(i = 0; i < drink.boozes.length; i++)
     {
-        ml = Math.round({{ options.taster_size }} * parseInt(drink.boozes[i][1]) / total); 
+        ml = {{ options.taster_size }} * parseInt(drink.boozes[i][1]) / total; 
         if (i == 0)
             args = "?";
         else 

@@ -12,6 +12,7 @@ from flask.ext.login import login_required, logout_user
 from werkzeug.exceptions import InternalServerError, BadRequest
 from bartendro.model.option import Option
 from bartendro.options import bartendro_options
+from bartendro.options import load_options
 import types
 
 
@@ -64,6 +65,8 @@ def ws_options():
             reload = True
         except ImportError:
             reload = False
+            
+        app.options = load_options()
         return json.dumps({ 'reload' : reload });
 
     raise BadRequest

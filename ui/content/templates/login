@@ -1,4 +1,4 @@
-{% extends 'admin/layout' %}
+{% extends 'layout' %}
 {% block body %}
     <div class="row-fluid">
         <div class="span3"></div>
@@ -8,7 +8,7 @@
           {% else %}
               <div class="alert" id="status-message">Login required</div>
           {% endif %}
-          <form method="POST" action="/admin/login" class="form-horizontal">
+          <form method="POST" action="/login" class="form-horizontal">
              <div class="control-group">
                 {{ form["user"].label(class="control-label")}} 
                 <div class="controls">

@@ -6,6 +6,11 @@
        {% if saved %}
           <div class="alert"> Your changes have been saved.  </div>
        {% endif %}
+       {% if delete_message %}
+           <div class="alert"> {{delete_message}} </div>
+       {% elif deleted%}
+           <div class="alert"> Booze has been deleted.  </div>
+       {% endif %}
        {% if booze and booze.is_abstract() %}
            <div class="attention">
        {% else %}
@@ -59,6 +64,10 @@
              <div style="margin-top: 20px">
                  {{ form.save(class="btn btn-large btn-primary submit-button") }}
              </div>
+             <div style="margin-top: 20px">
+                  {{ form.delete(class="btn btn-large btn-danger delete-button") }}
+              </div>
+
              
           </form>
        </div>

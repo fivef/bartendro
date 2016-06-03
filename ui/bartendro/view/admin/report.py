@@ -7,14 +7,17 @@ from bartendro.model.drink import Drink
 from bartendro.model.booze import Booze
 from bartendro.model.booze_group import BoozeGroup
 from bartendro.form.booze import BoozeForm
+from flask.ext.permissions.decorators import user_is, user_has
 
 @app.route('/admin/report')
 @login_required
+@user_is('admin')
 def report_index():
     return render_template("admin/report", options=app.options, title="Top drinks report")
 
 @app.route('/admin/report/<begin>/<end>')
 @login_required
+@user_is('admin')
 def report_view(begin, end):
     try:
         begindate = int(time.mktime(time.strptime(begin, "%Y-%m-%d %H:%M")))

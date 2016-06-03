@@ -3,6 +3,7 @@ import time
 from bartendro import app, db
 from flask import Flask, request, render_template
 from flask.ext.login import login_required
+import io
 
 LOG_LINES_TO_SHOW = 1000
 
@@ -12,7 +13,7 @@ def debug_index():
 
     startup_log = app.driver.get_startup_log()
     try:
-        b_log = open("logs/bartendro.log", "r")
+        b_log = io.open("logs/bartendro.log", "r", encoding="utf-8", errors="ignore")
         lines = b_log.readlines()
         b_log.close()
         lines = lines[-LOG_LINES_TO_SHOW:]
