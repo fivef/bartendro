@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 import logging
 from time import sleep, time
@@ -11,8 +12,14 @@ CLEAN_DURATION = 10 # seconds
 log = logging.getLogger('bartendro')
 
 class CleanCycle(object):
-    left_set = [4, 5, 6, 8, 9, 10] #removed 7 to prevent stirring while cleaning
-    right_set = [0, 1, 2, 3, 11, 12, 13, 14]
+
+    #TODO: does not have effect. check db!
+    left_set = [1, 2, 3, 4, 5]# 6, 9, 10, 11, 12, 13, 14]
+    #removed 7 to prevent stirring while cleaning
+    #removed 8 gemke. behaves strangely atm
+
+    right_set = [] #[0, 1, 2, 3, 11, 12, 13, 14]
+
     STAGGER_DELAY = .150 # ms
 
     def __init__(self, mixer, mode):

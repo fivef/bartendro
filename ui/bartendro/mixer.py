@@ -529,7 +529,14 @@ class Mixer(object):
 
             duration = Decimal(recipe[disp]) / flowrate
 
-            #find dispenser with the longes duration
+            #extra duration for slow gemke dispenser (#11 in our case)
+            if disp+1 == 11:
+                print "#"*20
+                print "Attention! #11 is set to Gemke slowmo Pump! Dispensing from 2.5 times longer than standard!"
+                print "#"*20
+                duration = float(duration)*2.5
+
+            #find dispenser with the longest duration
             if duration > max_duration:
                 max_duration = duration
 
