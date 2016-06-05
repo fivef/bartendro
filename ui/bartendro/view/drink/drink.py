@@ -11,7 +11,7 @@ from bartendro.model.booze_group import BoozeGroup
 from bartendro.model.booze_group_booze import BoozeGroupBooze
 from bartendro.model.drink_name import DrinkName
 from bartendro.model.dispenser import Dispenser
-from bartendro import constant 
+from bartendro import constant
 
 
 @app.route('/drink/<int:id>')
@@ -32,7 +32,7 @@ def drink(id, go):
 
     drink = db.session.query(Drink) \
                           .filter(Drink.id == id) \
-                          .first() 
+                          .first()
 
     boozes = db.session.query(Booze) \
                           .join(DrinkBooze.booze) \
@@ -49,7 +49,7 @@ def drink(id, go):
     has_tart = False
     show_sobriety = 0 #drink.id == 46
     for booze in boozes:
-        if booze.type == BOOZE_TYPE_ALCOHOL: 
+        if booze.type == BOOZE_TYPE_ALCOHOL:
             has_alcohol = True
         else:
             has_non_alcohol = True
@@ -58,20 +58,22 @@ def drink(id, go):
 
     show_sweet_tart = has_sweet and has_tart
     show_strength = has_alcohol and has_non_alcohol
-    
+
     """ only allow to pour drinks if
     the ip of the request is in allowed ips list set in options """
     remote_addr=request.remote_addr
-    allowed_ip_addresses = app.options.ips_allowed_to_pour_drinks.split(",")
-    
-    if remote_addr in allowed_ip_addresses:
+    allowed_ip_addresses = app.options.ips_allowed_to_pour_drinks.split(", ")
+    #@fivef: there is a blank between the ips in db!
+
+    if unicode(remote_addr) in allowed_ip_addresses:
         allowed_to_pour = True
     else:
         allowed_to_pour = False
+        print "not allowed to pour. Ip: "+str(remote_addr)+" not in "+str(allowed_ip_addresses)
 
     if not custom_drink:
-        return render_template("drink/index", 
-                               drink=drink, 
+        return render_template("drink/index",
+                               drink=drink,
                                options=app.options,
                                title=drink.name.name,
                                is_custom=0,
@@ -79,7 +81,7 @@ def drink(id, go):
                                show_sobriety=show_sobriety,
                                can_change_strength=show_strength,
                                go=go,
-                               can_make=can_make, 
+                               can_make=can_make,
                                allowed_to_pour=allowed_to_pour)
 
     dispensers = db.session.query(Dispenser).all()
@@ -101,9 +103,9 @@ def drink(id, go):
         except KeyError:
             pass
 
-    booze_group.booze_group_boozes = sorted(filtered, key=lambda booze: booze.sequence ) 
-    return render_template("drink/index", 
-                           drink=drink, 
+    booze_group.booze_group_boozes = sorted(filtered, key=lambda booze: booze.sequence )
+    return render_template("drink/index",
+                           drink=drink,
                            options=app.options,
                            title=drink.name.name,
                            is_custom=1,

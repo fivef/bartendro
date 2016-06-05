@@ -13,7 +13,7 @@ import random
 try:
     import RPi.GPIO as GPIO
 except ImportError:
-  
+
     print "\nUnable to import RPi.GPIO! Automatically switched to simulation mode!!! If you are on a Raspberry Pi try sudo apt-get install python-rpi.gpio -y\n"
     import RPiSIM.GPIO as GPIO
 
@@ -24,7 +24,7 @@ GPIOOutputs =  [2, 3, 4, 17, 27, 22, 18, 23, 24, 25, 8]
 STIRRER_GPIO_PIN = 7
 
 #with this list specific output pins can be inverted. 0 means normally LOW, 1 means normally HIGH
-INVERTED_PINS = [1, 1, 1, 1,  1,  1,  1,  1,  0,  0,  0]
+INVERTED_PINS = [1, 1, 1, 1,  1,  1,  1,  1,  1,  1,  1, 1]
 
 MOTOR_DIRECTION_FORWARD       = 1
 MOTOR_DIRECTION_BACKWARD      = 0
@@ -32,19 +32,19 @@ MOTOR_DIRECTION_BACKWARD      = 0
 log = logging.getLogger('bartendro')
 
 class Dispenser():
-    
+
     def __init__(self, gpio, inverted=0):
         self.gpio = gpio
         self.inverted = inverted
         self.dispensing = False
         self.dispensing_thread = None
-        
+
     def get_gpio_number(self):
         return self.gpio
-    
+
     def pour_for_duration(self, duration):
         self.dispensing_thread = DispenseForDurationThread(self, duration).start()
-            
+
     def start_dispensing(self):
         if self.inverted:
             GPIO.output(self.gpio, GPIO.LOW)
@@ -53,9 +53,9 @@ class Dispenser():
 
         self.dispensing = True
         log.info("GPIO: " + str(self.gpio) + " start dispensing.\n")
-        #todo error handling 
+        #todo error handling
         return True
-        
+
     def stop_dispensing(self):
         if self.inverted:
             GPIO.output(self.gpio, GPIO.HIGH)
@@ -64,12 +64,12 @@ class Dispenser():
 
         self.dispensing = False
         log.info("GPIO: " + str(self.gpio) + " stop dispensing.\n")
-        #todo error handling 
+        #todo error handling
         return True
-        
+
     def is_dispensing(self):
         return self.dispensing
-    
+
 
 class RouterDriver(object):
     '''This object interacts with the rasppi'''
@@ -82,14 +82,14 @@ class RouterDriver(object):
         #add dispensers
         for index, gpio in enumerate(GPIOOutputs):
             self.dispensers.append(Dispenser(gpio, INVERTED_PINS[index]))
-            
+
         self.startup_log = ""
         self.num_dispensers = len(self.dispensers)
         self.dispenser_version = 0
- 
+
     def get_startup_log(self):
         return self.startup_log
-    
+
     def get_dispenser_version(self):
         return self.dispenser_version
 
@@ -97,9 +97,9 @@ class RouterDriver(object):
         """Reset the hardware. Do this if there is shit going wrong. All motors will be stopped
            and reset."""
         log.info("Reset Hardware. Not implemented.\n")
-         
+
         #TODO: reset
-   
+
     def count(self):
         return self.num_dispensers
 
@@ -117,10 +117,10 @@ class RouterDriver(object):
                 GPIO.output(dispenser.get_gpio_number(), GPIO.HIGH)
             else:
                 GPIO.output(dispenser.get_gpio_number(), GPIO.LOW)
-                
+
         self._clear_startup_log()
 
-    def close(self):    
+    def close(self):
         GPIO.cleanup()
 
     def log(self, msg):
@@ -133,35 +133,35 @@ class RouterDriver(object):
 
     def dispense_time(self, dispenser, duration):
         log.info("Start dispensing on dispenser " + str(dispenser) + " for " + str(duration) + " seconds.\n")
-             
+
         self.dispensers[dispenser].pour_for_duration(duration)
         return True
-        
+
     def stir_for_duration(self, duration):
         log.info("Start stirring for " + str(duration) + " seconds.\n")
-     
+
         self.stirrer.pour_for_duration(duration)
         return True
 
     def ping(self, dispenser):
         log.info("Ping not implemented.\n")
-        
+
         return True
 
     def start(self, dispenser):
-        
+
         return self.dispensers[dispenser].start_dispensing()
-  
+
     def stop(self, dispenser):
-        
+
         return self.dispensers[dispenser].stop_dispensing()
-       
+
     def is_dispensing(self, dispenser):
         """
-        Returns a tuple of (dispensing, is_over_current) 
+        Returns a tuple of (dispensing, is_over_current)
         """
         return (self.dispensers[dispenser].is_dispensing(), False)
-       
+
     def set_motor_direction(self, dispenser, direction):
         #log.info("Set motor direction to " + str(direction) + ".\n")
 
@@ -182,8 +182,8 @@ class RouterDriver(object):
     def get_liquid_level_thresholds(self, dispenser):
         log.info("Get liquid level thersholds.\n")
         return True
-        
-                
+
+
     def set_liquid_level_thresholds(self, dispenser, low, out):
         log.info("Set liquid level thersholds. Low: " + str(low) + " Out: " + str(out) + "\n")
         return True
