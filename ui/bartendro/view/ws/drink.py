@@ -4,7 +4,7 @@ from time import sleep
 from operator import itemgetter
 from bartendro import app, db, mixer
 from flask import Flask, request
-from flask.ext.login import login_required, current_user
+from flask.ext.login import login_required, current_user, logout_user
 from werkzeug.exceptions import ServiceUnavailable, BadRequest, InternalServerError
 from bartendro.model.drink import Drink
 from bartendro.model.drink_name import DrinkName
@@ -12,6 +12,7 @@ from bartendro.model.booze import Booze
 from bartendro.model.drink_booze import DrinkBooze
 from bartendro.model.dispenser import Dispenser
 from bartendro.error import BartendroBusyError, BartendroBrokenError, BartendroCantPourError, BartendroCurrentSenseError
+
 
 def ws_make_drink(drink_id):
     recipe = {}
@@ -22,6 +23,7 @@ def ws_make_drink(drink_id):
     drink = Drink.query.filter_by(id=int(drink_id)).first()
     try:
         app.mixer.make_drink(drink, recipe)
+        logout_if_no_admin()
     except mixer.BartendroCantPourError, err:
         raise BadRequest(err)
     except mixer.BartendroBrokenError, err:
@@ -30,6 +32,15 @@ def ws_make_drink(drink_id):
         raise ServiceUnavailable(err)
 
     return "ok\n"
+
+
+def logout_if_no_admin():
+    if u"admin" in current_user.roles:
+        print "User was not logged out because he is an admin."
+    else:
+        print "User was logged out."
+        logout_user()
+
 
 @app.route('/ws/drink/<int:drink>')
 def ws_drink(drink):
