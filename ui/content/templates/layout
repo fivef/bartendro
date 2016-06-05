@@ -14,7 +14,7 @@
     <script type="text/javascript" src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
     
     <!-- only poll the rfid reader if the machine user (id 4) is logged in-->
-    {% if current_user.get_id() == 4 %}
+    {% if allowed_to_pour %}
     <script type="text/javascript">
       (function rfid_checker() {
         $.ajax({
