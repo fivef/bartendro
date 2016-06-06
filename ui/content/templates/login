@@ -8,7 +8,11 @@
           {% else %}
               <div class="alert" id="status-message">Login required</div>
           {% endif %}
-          <form method="POST" action="/login" class="form-horizontal">
+          {% if request.args.next %}
+          <form method="POST" action="{{ url_for("login", next=request.args.next) }}" class="form-horizontal">
+          {% else %}
+          <form method="POST" action="{{ url_for("login") }}" class="form-horizontal">
+          {% endif %}
              <div class="control-group">
                 {{ form["user"].label(class="control-label")}} 
                 <div class="controls">

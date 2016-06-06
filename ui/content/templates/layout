@@ -18,12 +18,13 @@
     <script type="text/javascript">
       (function rfid_checker() {
         $.ajax({
-          url: '/rfid', 
-          dataType : "json",
+          url: "/rfid", 
+          data: "next={{ request.args.next }}",
           success: function(data) {
-            $("#tag_id").text(data.tag_id);
-            if(data.tag_id != ""){
-              location.reload();
+            if(data.url){
+              if(data.url != ""){
+                location = data.url
+              }
             }
           },
           complete: function() {
@@ -62,8 +63,6 @@
             <li><a href="/logout" class="slim-nav-item">Logout</a></li>
           {% else %}
             <li><a href="/login" class="slim-nav-item">Login</a></li>
-            <li><label id="tag_id" name="tag_id">RFID</label></li>
-  
           {% endif %}
         </ul>
         <div class="bartendro-logo">

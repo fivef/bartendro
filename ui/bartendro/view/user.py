@@ -11,7 +11,15 @@ from bartendro.view.drink.drink import is_ip_allowed_to_pour_drinks
 def load_user(userid):
     return db.session.query(User).filter(User.id == userid).first()
 
-
+"""
+@login_manager.unauthorized_handler
+def handle_needs_login():
+    next = request.args.get("next")
+    if next:
+        return redirect(url_for('login', next=next))
+    else:
+        return redirect(url_for('login'))
+"""
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm(request.form)
@@ -25,17 +33,34 @@ def login():
         if user_object.first():
             if user_object.first().check_password(password):
                 login_user(user_object.first())
-                return redirect(request.args.get("next") or "/")
+                """ TODO: next_is_valid should check if the user has valid permission to access the `next` url
+                if not the application will be vulnerable to open redirects. """
+                next_args = request.args.get("next")
+                if next_args:
+                    print("Redirect to {}".format(next_args))
+                    return redirect(next_args)
+                else:
+                    print("Redirect to index")
+                    return redirect(url_for("index"))
+                    
+                    
+        next_args = request.args.get("next")
+        print("Show login failed")
         return render_template("/login",
                                options=app.options,
                                form=form,
                                fail=1,
-                               allowed_to_pour=is_ip_allowed_to_pour_drinks(request.remote_addr))
+                               allowed_to_pour=is_ip_allowed_to_pour_drinks(request.remote_addr),
+                               next=next_args)
+
+    next_args = request.args.get("next")
+    print("Show login")
     return render_template("/login",
                            options=app.options,
                            form=form,
                            fail=0,
-                           allowed_to_pour=is_ip_allowed_to_pour_drinks(request.remote_addr))
+                           allowed_to_pour=is_ip_allowed_to_pour_drinks(request.remote_addr),
+                           next=next_args)
 
 
 @app.route("/logout")
@@ -58,7 +83,10 @@ def rfid():
             return jsonify(tag_id=tag_id)
         login_user(user_object.first())
         print("User {} logged in".format(user_object.first().name))
+        next_args = request.args.get("next")
+        if next_args:
+            return jsonify(url=next_args)
+        else:
+            return jsonify(url=url_for("index"))
 
-        return jsonify(tag_id=tag_id)
-        # TODO correctly redirect to wanted target redirect(url_for("index"))
-    return jsonify(tag_id=tag_id)
+    return jsonify(url="")
