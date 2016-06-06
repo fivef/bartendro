@@ -83,6 +83,7 @@ def ws_shots(booze_id):
 
     try:
         app.mixer.dispense_shot(dispenser, app.options.shot_size)
+        logout_if_no_admin()
     except mixer.BartendroCantPourError, err:
         raise BadRequest(err)
     except mixer.BartendroBrokenError, err:
