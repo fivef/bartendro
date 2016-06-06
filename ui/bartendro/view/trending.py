@@ -21,14 +21,30 @@ display_info = {
     0 : 'All drinks ever poured'
 }
 
+
+@app.route('/trending/user')
+def trending_drinks_user():
+    return trending_drinks_detail(DEFAULT_TIME, user_only=True)
+
+
+@app.route('/trending/user/<int:hours>')
+def user_drink_details(hours):
+    return trending_drinks_detail(hours, user_only=True)
+
+
 @app.route('/trending')
 def trending_drinks():
-    return trending_drinks_detail(DEFAULT_TIME)
+        return trending_drinks_detail(DEFAULT_TIME)
+
 
 @app.route('/trending/<int:hours>')
-def trending_drinks_detail(hours):
+def trending_drinks_detail(hours, user_only=False):
 
-    title = "Trending drinks"
+    if user_only:
+        title = "User Stats"
+    else:
+        title = "Trending drinks"
+        
     log = db.session.query(DrinkLog).order_by(desc(DrinkLog.time)).first() or 0
     if log:
         if not log.time:
@@ -51,29 +67,39 @@ def trending_drinks_detail(hours):
         enddate = 0
         txt = ""
 
-    total_number = db.session.query("number")\
-                 .from_statement("""SELECT count(*) as number
-                                      FROM drink_log 
-                                     WHERE drink_log.time >= :begin 
-                                       AND drink_log.time <= :end""")\
-                 .params(begin=begindate, end=enddate).first()
+    if user_only:             
+        total_number = len(db.session.query(DrinkLog)
+                             .filter(DrinkLog.user_id == current_user.id)
+                             .filter(DrinkLog.time >= begindate)
+                             .filter(DrinkLog.time <= enddate).all())
+                     
+    else:
+        total_number = len(db.session.query(DrinkLog)
+                             .filter(DrinkLog.time >= begindate)
+                             .filter(DrinkLog.time <= enddate).all())
 
-    total_volume = db.session.query("volume")\
-                 .from_statement("""SELECT sum(drink_log.size) as volume 
-                                      FROM drink_log 
-                                     WHERE drink_log.time >= :begin 
-                                       AND drink_log.time <= :end""")\
-                 .params(begin=begindate, end=enddate).first()
+    if user_only:
+        total_volume = db.session.query(func.sum(DrinkLog.size).label("sum"))\
+                                 .filter(DrinkLog.user_id == current_user.id)\
+                                 .filter(DrinkLog.time >= begindate)\
+                                 .filter(DrinkLog.time <= enddate).scalar()
+    else:
+        total_volume = db.session.query(func.sum(DrinkLog.size).label("sum"))\
+                                 .filter(DrinkLog.time >= begindate)\
+                                 .filter(DrinkLog.time <= enddate).scalar()
 
-    total_volume_of_pure_alcohol = calculate_total_volume_of_pure_alcohol(begindate, enddate)
+    total_volume_of_pure_alcohol = calculate_total_volume_of_pure_alcohol(begindate, enddate, user_only=user_only)
     
     beer_equivalent = "{0:.2f}".format(calculate_beer_equivalent(total_volume_of_pure_alcohol))
-                
-    bac = "{0:.2f}".format(calculate_bac(total_volume_of_pure_alcohol))
+    
+    if user_only:
+        bac = "{0:.2f}".format(calculate_bac(total_volume_of_pure_alcohol))
+    else:
+        bac = 0.0
             
-    try:
+    if user_only:
         user_id_sql_string = """AND drink_log.user_id = """ + str(current_user.id)
-    except AttributeError:
+    else:
         #no user is logged in, show overview
         user_id_sql_string = ""
     top_drinks = db.session.query("id", "name", "number", "volume")\
@@ -91,24 +117,23 @@ def trending_drinks_detail(hours):
                  .params(begin=begindate, end=enddate).all()
 
 
-
-
     return render_template("trending", top_drinks = top_drinks, options=app.options,
-                                       title="Trending drinks",
+                                       title=title,
                                        txt=txt,
-                                       total_number=total_number[0],
-                                       total_volume=total_volume[0],
+                                       total_number=total_number,
+                                       total_volume=total_volume,
                                        total_volume_of_pure_alcohol=total_volume_of_pure_alcohol,
                                        beer_equivalent=beer_equivalent,
                                        bac=bac,
                                        hours=hours,
-                                       allowed_to_pour=is_ip_allowed_to_pour_drinks(request.remote_addr))
+                                       allowed_to_pour=is_ip_allowed_to_pour_drinks(request.remote_addr),
+                                       user_only=user_only)
                                        
                                        
-def calculate_total_volume_of_pure_alcohol(begindate, enddate):
+def calculate_total_volume_of_pure_alcohol(begindate, enddate, user_only=False):
     # calculate the total amount of pure alcohol drunk during the selected period
     
-    try:
+    if user_only:
         drink_log_booze_of_current_user_with_alcohol = db.session.query(DrinkLog, DrinkLogBooze, Booze)\
             .filter(DrinkLog.id==DrinkLogBooze.drink_log_id)\
             .filter(DrinkLog.user_id==current_user.id)\
@@ -116,7 +141,7 @@ def calculate_total_volume_of_pure_alcohol(begindate, enddate):
             .filter(Booze.type==1)\
             .filter(DrinkLog.time>=begindate)\
             .filter(DrinkLog.time<=enddate).all()
-    except AttributeError as e:
+    else:
         # no user is logged in, take all drinks in drink log
         drink_log_booze_of_current_user_with_alcohol = db.session.query(DrinkLog, DrinkLogBooze, Booze)\
             .filter(DrinkLog.id==DrinkLogBooze.drink_log_id)\
