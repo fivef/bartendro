@@ -24,7 +24,7 @@
   </tr>
   </table>
   {% if not allowed_to_pour %}
-  <div style="align: center"><b>You can send the drink to the machine and pour it there!</b></div>
+  <div style="align: center"><b>You can only pour drinks at the machine. But you can send the drink to the machine and pour it there!</b></div>
   {% endif %}
   <div class="row-fluid">
       <div class="span5">

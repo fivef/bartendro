@@ -11,6 +11,7 @@ from bartendro.model.booze import Booze
 from bartendro.model.booze_group import BoozeGroup
 from bartendro.model.user import User
 from bartendro.form.booze import BoozeForm
+from bartendro.view.drink.drink import is_ip_allowed_to_pour_drinks
 
 DEFAULT_TIME = 12
 display_info = {
@@ -100,7 +101,8 @@ def trending_drinks_detail(hours):
                                        total_volume_of_pure_alcohol=total_volume_of_pure_alcohol,
                                        beer_equivalent=beer_equivalent,
                                        bac=bac,
-                                       hours=hours)
+                                       hours=hours,
+                                       allowed_to_pour=is_ip_allowed_to_pour_drinks(request.remote_addr))
                                        
                                        
 def calculate_total_volume_of_pure_alcohol(begindate, enddate):

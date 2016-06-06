@@ -11,6 +11,7 @@ from bartendro.model.drink import Drink
 from bartendro.model.drink_name import DrinkName
 from bartendro import fsm
 from bartendro.mixer import LL_LOW, LL_OK
+from bartendro.view.drink.drink import is_ip_allowed_to_pour_drinks
 
 
 def process_ingredients(drinks):
@@ -90,11 +91,13 @@ def index():
         lucky.set_ingredients_text("Pour a random drink now")
         top_drinks.insert(0, lucky)
 
+
     return render_template("index", 
                            options=app.options, 
                            top_drinks=top_drinks, 
                            other_drinks=other_drinks,
-                           title="Bartendro")
+                           title="Bartendro",
+                           allowed_to_pour=is_ip_allowed_to_pour_drinks(request.remote_addr))
 
 @app.route('/shots')
 @login_required
@@ -129,4 +132,5 @@ def shots():
                            num_shots_ready= len(shots),
                            options=app.options, 
                            shots=shots, 
-                           title="Shots")
+                           title="Shots",
+                           allowed_to_pour=is_ip_allowed_to_pour_drinks(request.remote_addr))
