@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://192.168.0.26:8080/" />
-<title>logout</title>
+<title>login_next_cocktail</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">logout</td></tr>
+<tr><td rowspan="1" colspan="3">login_next_cocktail</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
@@ -18,14 +18,35 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=Logout</td>
+	<td>link=Bahama Mama</td>
 	<td></td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>link=Login</td>
-	<td>Login</td>
+	<td>type</td>
+	<td>id=user</td>
+	<td>user</td>
 </tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>user</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=login</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTitle</td>
+	<td>Bahama Mama</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Logout</td>
+	<td></td>
+</tr>
+
 </tbody></table>
 </body>
 </html>
